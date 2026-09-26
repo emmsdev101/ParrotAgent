@@ -1,0 +1,223 @@
+﻿@page "/Account/KnowledgeBases"
+@model ParrotAgent.Pages.Account.KnowledgeBasesModel
+@{
+    ViewData["Title"] = "Knowledge Bases";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/knowledge-bases.css" asp-append-version="true" />
+}
+<!-- ============ Page header ============ -->
+<header class="kb-header">
+    <div>
+        <h1 class="kb-title">Knowledge Bases</h1>
+        <p class="kb-subtitle">Organize your documents into dedicated, searchable spaces.</p>
+    </div>
+    <a href="/Account/CreateKnowledgeBase" class="pa-btn pa-btn-primary">
+        <i class="fas fa-plus"></i> New knowledge base
+    </a>
+</header>
+
+<!-- ============ Toolbar: search, filters, view toggle ============ -->
+<section class="kb-toolbar">
+    <div class="kb-toolbar-left">
+        <!-- Search -->
+        <div class="kb-search">
+            <i class="fas fa-search"></i>
+            <input type="search" placeholder="Search knowledge bases..." data-kb-search />
+            <kbd class="kb-search-kbd">⌘K</kbd>
+        </div>
+
+        <!-- Filter chips -->
+        <div class="kb-filters" data-kb-filters>
+            <button type="button" class="kb-chip active" data-filter="all">All</button>
+            <button type="button" class="kb-chip" data-filter="active">
+                <span class="kb-chip-dot blue"></span> Active
+            </button>
+            <button type="button" class="kb-chip" data-filter="synced">
+                <span class="kb-chip-dot purple"></span> Synced
+            </button>
+            <button type="button" class="kb-chip" data-filter="private">
+                <i class="fas fa-lock"></i> Private
+            </button>
+            <button type="button" class="kb-chip" data-filter="shared">
+                <i class="fas fa-users"></i> Shared
+            </button>
+        </div>
+    </div>
+
+    <div class="kb-toolbar-right">
+        <!-- Sort -->
+        <div class="kb-sort">
+            <i class="fas fa-arrow-down-wide-short"></i>
+            <select data-kb-sort>
+                <option value="recent">Recently updated</option>
+                <option value="name">Name (A–Z)</option>
+                <option value="docs">Most documents</option>
+                <option value="created">Newest first</option>
+            </select>
+            <i class="fas fa-chevron-down kb-sort-caret"></i>
+        </div>
+
+        <!-- View toggle -->
+        <div class="kb-view-toggle" data-kb-view>
+            <button type="button" class="active" data-view="grid" aria-label="Grid view">
+                <i class="fas fa-th-large"></i>
+            </button>
+            <button type="button" data-view="list" aria-label="List view">
+                <i class="fas fa-list"></i>
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- ============ Grid of knowledge bases ============ -->
+<section class="kb-grid" data-kb-grid>
+
+    @foreach(var kb in Model.UserKnowledgeBases)
+    {
+        <a href="/Account/KnowledgeBase/@kb.Id">
+        <article class="kb-card" data-kb-card data-status="active" data-name="@kb.Name">
+        <header class="kb-card-top">
+            <div class="kb-card-icon @kb.Color"><i class="fas @kb.Icon"></i></div>
+            <div class="kb-card-menu">
+                <button type="button" class="kb-menu-btn" aria-label="More options">
+                    <i class="fas fa-ellipsis-h"></i>
+                </button>
+            </div>
+        </header>
+
+        <div class="kb-card-body">
+            <h3 class="kb-card-title">@kb.Name</h3>
+            <p class="kb-card-desc">@kb.Description</p>
+        </div>
+
+        <footer class="kb-card-footer">
+            <div class="kb-card-meta">
+                <span class="kb-card-stat"><i class="fas fa-file-alt"></i> 24 docs</span>
+                <span class="kb-card-stat"><i class="far fa-clock"></i> 2h ago</span>
+            </div>
+            <span class="kb-badge active"><i class="fas fa-circle"></i> Active</span>
+        </footer>
+
+        <div class="kb-card-avatars">
+            <span class="kb-avatar" style="background: linear-gradient(135deg, #3b82f6, #8b5cf6);">M</span>
+            <span class="kb-avatar" style="background: linear-gradient(135deg, #8b5cf6, #ec4899);">A</span>
+            <span class="kb-avatar" style="background: linear-gradient(135deg, #f59e0b, #ef4444);">R</span>
+        </div>
+    </article>
+</a>
+    }
+
+    <!-- "Create new" card -->
+    <a href="/Account/CreateKnowledgeBase" class="kb-card kb-card-new">
+        <div class="kb-card-new-icon"><i class="fas fa-plus"></i></div>
+        <h3>Create new knowledge base</h3>
+        <p>Start a fresh, searchable space for your team.</p>
+    </a>
+
+</section>
+
+<!-- ============ Empty state (hidden by default) ============ -->
+<div class="kb-empty" data-kb-empty style="display: none;">
+    <div class="kb-empty-icon"><i class="fas fa-search"></i></div>
+    <h3>No knowledge bases found</h3>
+    <p>Try a different search term or clear the filters.</p>
+    <button type="button" class="pa-btn pa-btn-outline" data-kb-clear>Clear filters</button>
+</div>
+
+@section Scripts {
+    <script>
+        (function () {
+            'use strict';
+
+            var searchInput = document.querySelector('[data-kb-search]');
+            var filterChips = document.querySelectorAll('[data-kb-filters] .kb-chip');
+            var cards = document.querySelectorAll('[data-kb-card]');
+            var emptyState = document.querySelector('[data-kb-empty]');
+            var clearBtn = document.querySelector('[data-kb-clear]');
+
+            var currentFilter = 'all';
+            var currentSearch = '';
+
+            function applyFilters() {
+                var visible = 0;
+
+                cards.forEach(function (card) {
+                    var status = card.dataset.status || '';
+                    var name = (card.dataset.name || '').toLowerCase();
+
+                    var matchesFilter =
+                        currentFilter === 'all' ||
+                        status === currentFilter ||
+                        (currentFilter === 'private' && card.dataset.private === 'true') ||
+                        (currentFilter === 'shared' && card.dataset.shared === 'true');
+
+                    var matchesSearch =
+                        !currentSearch || name.indexOf(currentSearch) !== -1;
+
+                    if (matchesFilter && matchesSearch) {
+                        card.style.display = '';
+                        visible++;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+
+                emptyState.style.display = visible === 0 ? 'flex' : 'none';
+            }
+
+            // Search
+            if (searchInput) {
+                searchInput.addEventListener('input', function () {
+                    currentSearch = searchInput.value.trim().toLowerCase();
+                    applyFilters();
+                });
+            }
+
+            // Filter chips
+            filterChips.forEach(function (chip) {
+                chip.addEventListener('click', function () {
+                    filterChips.forEach(function (c) { c.classList.remove('active'); });
+                    chip.classList.add('active');
+                    currentFilter = chip.dataset.filter;
+                    applyFilters();
+                });
+            });
+
+            // Clear
+            if (clearBtn) {
+                clearBtn.addEventListener('click', function () {
+                    currentFilter = 'all';
+                    currentSearch = '';
+                    if (searchInput) searchInput.value = '';
+                    filterChips.forEach(function (c) { c.classList.remove('active'); });
+                    var allChip = document.querySelector('[data-filter="all"]');
+                    if (allChip) allChip.classList.add('active');
+                    applyFilters();
+                });
+            }
+
+            // Keyboard shortcut: ⌘K / Ctrl+K focuses search
+            document.addEventListener('keydown', function (e) {
+                if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+                    e.preventDefault();
+                    if (searchInput) searchInput.focus();
+                }
+            });
+
+            // View toggle
+            var viewToggle = document.querySelector('[data-kb-view]');
+            var grid = document.querySelector('[data-kb-grid]');
+            if (viewToggle && grid) {
+                viewToggle.querySelectorAll('button').forEach(function (btn) {
+                    btn.addEventListener('click', function () {
+                        viewToggle.querySelectorAll('button').forEach(function (b) { b.classList.remove('active'); });
+                        btn.classList.add('active');
+                        grid.classList.toggle('kb-grid-list', btn.dataset.view === 'list');
+                    });
+                });
+            }
+        })();
+    </script>
+}

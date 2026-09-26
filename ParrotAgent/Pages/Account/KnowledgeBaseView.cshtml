@@ -1,0 +1,258 @@
+﻿@page "/Account/KnowledgeBase/{id:int}"
+@model ParrotAgent.Pages.Account.KnowledgeBaseViewModel
+@{
+    ViewData["Title"] = Model.UserKnowledgeBase?.Name ?? "Knowledge Base";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/kb-view.css" asp-append-version="true" />
+}
+
+<!-- Hidden: knowledge base id used by the uploader -->
+<div data-kb-id="@Model.UserKnowledgeBase.Id" hidden></div>
+
+<!-- ============ Breadcrumb + KB header ============ -->
+<header class="kbv-header">
+    <nav class="kbv-breadcrumb" aria-label="Breadcrumb">
+        <a href="/Account/Dashboard">Dashboard</a>
+        <i class="fas fa-chevron-right"></i>
+        <a href="/Account/KnowledgeBases">Knowledge Bases</a>
+        <i class="fas fa-chevron-right"></i>
+        <span>@Model.UserKnowledgeBase.Name</span>
+    </nav>
+
+    <div class="kbv-header-main">
+        <div class="kbv-header-left">
+            <div class="kbv-icon blue">
+                <i class="fas fa-file-alt"></i>
+            </div>
+            <div class="kbv-header-info">
+                <h1 class="kbv-title">@Model.UserKnowledgeBase.Name</h1>
+                <p class="kbv-desc">@Model.UserKnowledgeBase.Description</p>
+                <div class="kbv-meta">
+                    <span class="kbv-meta-item"><i class="fas fa-file-alt"></i> 0</span>
+                    <span class="kbv-meta-item"><i class="fas fa-users"></i> 3 members</span>
+                    <span class="kbv-meta-item"><i class="far fa-clock"></i> Updated 2 hours ago</span>
+                    <span class="kbv-badge active"><i class="fas fa-circle"></i> Active</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="kbv-header-actions">
+            <button type="button" class="pa-btn pa-btn-outline">
+                <i class="fas fa-share-alt"></i> Share
+            </button>
+            <button type="button" class="pa-btn pa-btn-outline">
+                <i class="fas fa-cog"></i> Settings
+            </button>
+            <button type="button" class="pa-btn pa-btn-primary" data-kbv-upload-trigger>
+                <i class="fas fa-cloud-upload-alt"></i> Upload documents
+            </button>
+        </div>
+    </div>
+</header>
+
+<!-- ============ Tabs ============ -->
+<nav class="kbv-tabs" aria-label="Knowledge base sections">
+    <button type="button" class="kbv-tab active" data-kbv-tab="documents">
+        <i class="fas fa-file-alt"></i> Documents
+        <span class="kbv-tab-count">0</span>
+    </button>
+    <button type="button" class="kbv-tab" data-kbv-tab="activity">
+        <i class="fas fa-stream"></i> Activity
+    </button>
+    <button type="button" class="kbv-tab" data-kbv-tab="members">
+        <i class="fas fa-users"></i> Members
+        <span class="kbv-tab-count">3</span>
+    </button>
+    <button type="button" class="kbv-tab" data-kbv-tab="settings">
+        <i class="fas fa-cog"></i> Settings
+    </button>
+</nav>
+
+<!-- ============ Documents tab ============ -->
+<section class="kbv-panel active" data-kbv-panel="documents">
+
+    <!-- ============ Dropzone ============ -->
+    <div class="kbv-dropzone" data-kbv-dropzone>
+        <div class="kbv-dropzone-inner">
+            <div class="kbv-dropzone-icon">
+                <i class="fas fa-cloud-upload-alt"></i>
+            </div>
+            <h3>Drop your files here</h3>
+            <p>
+                or
+                <button type="button" class="kbv-dropzone-link" data-kbv-browse>
+                    browse from your computer
+                </button>
+            </p>
+            <small>Support for PDF, DOCX, TXT, MD, and 20+ more formats · Max 100 MB per file</small>
+        </div>
+
+        <!-- Hidden file input -->
+        <input type="file"
+               multiple
+               hidden
+               data-kbv-file-input
+               accept=".pdf,.doc,.docx,.txt,.md,.rtf,.csv,.xls,.xlsx,.ppt,.pptx" />
+    </div>
+
+    <!-- ============ Upload queue (hidden until files are added) ============ -->
+    <section class="kbv-uploads" data-kbv-uploads hidden>
+
+        <header class="kbv-uploads-header" data-kbv-uploads-header>
+            <div class="kbv-uploads-summary">
+                <strong data-kbv-summary-title>Uploading...</strong>
+                <small data-kbv-summary-sub>0 B of 0 B</small>
+            </div>
+            <div class="kbv-uploads-actions">
+                <button type="button" class="kbv-uploads-cancel" data-kbv-cancel-all>
+                    Cancel all
+                </button>
+                <button type="button" class="kbv-uploads-clear" data-kbv-clear-done hidden>
+                    Clear completed
+                </button>
+            </div>
+            <div class="kbv-uploads-total-bar">
+                <div class="kbv-uploads-total-fill" data-kbv-total-fill></div>
+            </div>
+        </header>
+
+        <ul class="kbv-upload-list" data-kbv-upload-list></ul>
+
+    </section>
+
+    <!-- Toolbar: search + sort + view -->
+    <div class="kbv-toolbar">
+        <div class="kbv-search">
+            <i class="fas fa-search"></i>
+            <input type="search" placeholder="Search documents in this base..." data-kbv-search />
+        </div>
+
+        <div class="kbv-toolbar-right">
+            <div class="kbv-sort">
+                <i class="fas fa-arrow-down-wide-short"></i>
+                <select data-kbv-sort>
+                    <option value="recent">Recently updated</option>
+                    <option value="name">Name (A–Z)</option>
+                    <option value="size">Size</option>
+                    <option value="type">Type</option>
+                </select>
+                <i class="fas fa-chevron-down kbv-sort-caret"></i>
+            </div>
+
+            <div class="kbv-view-toggle" data-kbv-view>
+                <button type="button" class="active" data-view="grid" aria-label="Grid view">
+                    <i class="fas fa-th-large"></i>
+                </button>
+                <button type="button" data-view="list" aria-label="List view">
+                    <i class="fas fa-list"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Document list -->
+    <div class="kbv-docs" data-kbv-docs>
+        @foreach(var document in Model.KnowledgeBaseDocuments)
+        {
+             (string cssClass, string iconClass) = Model.GetDocumentFileType(document.ContentType);
+            
+            <article class="kbv-doc" data-doc-type="@cssClass">
+            <div class="kbv-doc-icon docx"><i class="fas @iconClass"></i></div>
+            <div class="kbv-doc-info">
+                <h4 class="kbv-doc-name">@document.Title</h4>
+                <div class="kbv-doc-meta">
+                    <span>1.1 MB</span>
+                    <span class="kbv-doc-sep"></span>
+                    <span>Uploaded 5h ago by Aisha</span>
+                </div>
+            </div>
+            <div class="kbv-doc-tags">
+                <span class="kbv-tag">Core</span>
+                <span class="kbv-tag purple">Public</span>
+            </div>
+            <button type="button" class="kbv-doc-menu" aria-label="Options"><i class="fas fa-ellipsis-h"></i></button>
+        </article>
+        }
+
+    </div>
+</section>
+
+<!-- ============ Activity tab ============ -->
+<section class="kbv-panel" data-kbv-panel="activity" hidden>
+    <div class="kbv-empty-panel">
+        <div class="kbv-empty-panel-icon"><i class="fas fa-stream"></i></div>
+        <h3>Activity feed coming soon</h3>
+        <p>Every upload, edit, and comment will show up here.</p>
+    </div>
+</section>
+
+<!-- ============ Members tab ============ -->
+<section class="kbv-panel" data-kbv-panel="members" hidden>
+    <div class="kbv-empty-panel">
+        <div class="kbv-empty-panel-icon"><i class="fas fa-users"></i></div>
+        <h3>Team members</h3>
+        <p>Manage who has access to this knowledge base.</p>
+    </div>
+</section>
+
+<!-- ============ Settings tab ============ -->
+<section class="kbv-panel" data-kbv-panel="settings" hidden>
+    <div class="kbv-empty-panel">
+        <div class="kbv-empty-panel-icon"><i class="fas fa-cog"></i></div>
+        <h3>Settings</h3>
+        <p>Name, description, visibility, and permissions.</p>
+    </div>
+</section>
+
+<!-- =========================================================
+     Upload item template (used by kb-uploader.js)
+     ========================================================= -->
+<template id="kbv-upload-item-template">
+    <li class="kbv-upload-item" data-upload-item>
+
+        <div class="kbv-upload-icon" data-upload-icon>
+            <i class="fas fa-file" data-upload-icon-glyph></i>
+        </div>
+
+        <div class="kbv-upload-info">
+            <div class="kbv-upload-name-row">
+                <strong data-upload-name>filename</strong>
+                <span class="kbv-upload-status" data-upload-status></span>
+            </div>
+            <div class="kbv-upload-meta">
+                <span data-upload-size>0 B</span>
+                <span class="kbv-doc-sep"></span>
+                <span data-upload-progress-text>0%</span>
+            </div>
+        </div>
+
+        <div class="kbv-upload-progress" data-upload-progress>
+            <div class="kbv-upload-bar" data-upload-bar></div>
+        </div>
+
+        <div class="kbv-upload-actions">
+            <button type="button" class="kbv-upload-action kbv-upload-cancel"
+                    data-upload-cancel aria-label="Cancel upload">
+                <i class="fas fa-times"></i>
+            </button>
+            <button type="button" class="kbv-upload-action kbv-upload-retry"
+                    data-upload-retry aria-label="Retry upload" hidden>
+                <i class="fas fa-redo"></i>
+            </button>
+            <button type="button" class="kbv-upload-action kbv-upload-remove"
+                    data-upload-remove aria-label="Remove" hidden>
+                <i class="fas fa-trash-alt"></i>
+            </button>
+        </div>
+
+    </li>
+</template>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
+    <script src="~/js/kb-view.js" asp-append-version="true"></script>
+    <script src="~/js/kb-uploader.js" asp-append-version="true"></script>
+    <script src="~/js/kb-uploader.js" asp-append-version="true"></script>
+}

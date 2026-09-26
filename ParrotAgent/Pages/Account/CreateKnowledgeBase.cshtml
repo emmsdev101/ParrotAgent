@@ -1,0 +1,264 @@
+﻿@page "/Account/CreateKnowledgeBase"
+@model ParrotAgent.Pages.Account.CreateKnowledgeBaseModel
+@{
+    ViewData["Title"] = "Create knowledge base";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/create-kb.css" asp-append-version="true" />
+}
+
+<!-- ============ Page header ============ -->
+<header class="ckb-header">
+    <div>
+        <nav class="ckb-breadcrumb" aria-label="Breadcrumb">
+            <a href="/Account/Dashboard">Dashboard</a>
+            <i class="fas fa-chevron-right"></i>
+            <a href="/Account/KnowledgeBases">Knowledge Bases</a>
+            <i class="fas fa-chevron-right"></i>
+            <span>New</span>
+        </nav>
+        <h1 class="ckb-title">Create a knowledge base</h1>
+        <p class="ckb-subtitle">Give it a name, pick an icon, and start uploading documents.</p>
+    </div>
+    <a href="/Account/KnowledgeBases" class="pa-btn pa-btn-ghost">
+        <i class="fas fa-arrow-left"></i> Cancel
+    </a>
+</header>
+
+<!-- ============ Two-column form layout ============ -->
+<form method="post" class="ckb-form" novalidate>
+    @Html.AntiForgeryToken()
+
+    <div class="ckb-grid">
+
+        <!-- =============================================
+             LEFT: Main form fields
+             ============================================= -->
+        <div class="ckb-main">
+
+            <!-- Section: Basics -->
+            <section class="ckb-card">
+                <header class="ckb-card-header">
+                    <h2>Basics</h2>
+                    <p>Name and describe what this knowledge base is for.</p>
+                </header>
+
+                <div class="ckb-field">
+                    <label asp-for="NewKnowledgeBase.Name">
+                        Name <span class="ckb-required">*</span>
+                    </label>
+                    <input asp-for="NewKnowledgeBase.Name" class="ckb-input"
+                           placeholder="e.g. Product Documentation"
+                           maxlength="80" required
+                           data-ckb-name-input />
+                    <small class="ckb-hint">A clear, descriptive name helps your team find it.</small>
+                    <span asp-validation-for="NewKnowledgeBase.Name" class="ckb-error"></span>
+                </div>
+
+                <div class="ckb-field">
+                    <label asp-for="NewKnowledgeBase.Description">Description</label>
+                    <textarea asp-for="NewKnowledgeBase.Description" class="ckb-input ckb-textarea"
+                              rows="3" maxlength="280"
+                              data-ckb-desc-input
+                              placeholder="What will this knowledge base contain?"></textarea>
+                    <small class="ckb-hint">Optional. Max 280 characters.</small>
+                </div>
+
+                <div class="ckb-field">
+                    <label asp-for="NewKnowledgeBase.Visibility">Visibility</label>
+                    <div class="ckb-select-wrap">
+                        <i class="fas fa-globe"></i>
+                        <select asp-for="NewKnowledgeBase.Visibility" class="ckb-input ckb-select">
+                            <option value="private">🔒 Private — only me</option>
+                            <option value="team" selected>👥 Team — everyone in my workspace</option>
+                            <option value="public">🌐 Public — anyone with the link</option>
+                        </select>
+                        <i class="fas fa-chevron-down ckb-select-caret"></i>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Appearance -->
+            <section class="ckb-card">
+                <header class="ckb-card-header">
+                    <h2>Appearance</h2>
+                    <p>Pick a color and icon to help identify this base.</p>
+                </header>
+
+                <div class="ckb-field">
+                    <label>Color</label>
+                    <div class="ckb-color-picker" data-ckb-color-picker>
+                        <button type="button" class="ckb-color blue active" data-color="blue" aria-label="Blue"></button>
+                        <button type="button" class="ckb-color purple" data-color="purple" aria-label="Purple"></button>
+                        <button type="button" class="ckb-color green" data-color="green" aria-label="Green"></button>
+                        <button type="button" class="ckb-color amber" data-color="amber" aria-label="Amber"></button>
+                        <button type="button" class="ckb-color pink" data-color="pink" aria-label="Pink"></button>
+                        <button type="button" class="ckb-color slate" data-color="slate" aria-label="Slate"></button>
+                        <input type="hidden" asp-for="NewKnowledgeBase.Color" data-ckb-color-input value="blue" />
+                    </div>
+                </div>
+
+                <div class="ckb-field">
+                    <label>Icon</label>
+                    <div class="ckb-icon-picker" data-ckb-icon-picker>
+                        <button type="button" class="ckb-icon active" data-icon="fa-file-alt"><i class="fas fa-file-alt"></i></button>
+                        <button type="button" class="ckb-icon" data-icon="fa-book"><i class="fas fa-book"></i></button>
+                        <button type="button" class="ckb-icon" data-icon="fa-users"><i class="fas fa-users"></i></button>
+                        <button type="button" class="ckb-icon" data-icon="fa-code"><i class="fas fa-code"></i></button>
+                        <button type="button" class="ckb-icon" data-icon="fa-bullhorn"><i class="fas fa-bullhorn"></i></button>
+                        <button type="button" class="ckb-icon" data-icon="fa-lightbulb"><i class="fas fa-lightbulb"></i></button>
+                        <button type="button" class="ckb-icon" data-icon="fa-flask"><i class="fas fa-flask"></i></button>
+                        <button type="button" class="ckb-icon" data-icon="fa-chart-line"><i class="fas fa-chart-line"></i></button>
+                        <input type="hidden" asp-for="NewKnowledgeBase.Icon" data-ckb-icon-input value="fa-file-alt" />
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Permissions -->
+            <section class="ckb-card">
+                <header class="ckb-card-header">
+                    <h2>Permissions</h2>
+                    <p>Control who can view, edit, and manage this base.</p>
+                </header>
+
+                <label class="ckb-check">
+                    <input type="checkbox" asp-for="NewKnowledgeBase.AllowMemberUploads" />
+                    <span class="ckb-check-box"><i class="fas fa-check"></i></span>
+                    <span class="ckb-check-content">
+                        <strong>Allow members to upload documents</strong>
+                        <small>Team members can add new files to this knowledge base.</small>
+                    </span>
+                </label>
+
+                <label class="ckb-check">
+                    <input type="checkbox" asp-for="NewKnowledgeBase.AllowMemberEditing" />
+                    <span class="ckb-check-box"><i class="fas fa-check"></i></span>
+                    <span class="ckb-check-content">
+                        <strong>Allow members to edit</strong>
+                        <small>Team members can rename and update documents.</small>
+                    </span>
+                </label>
+
+            </section>
+
+            <!-- Actions -->
+            <div class="ckb-actions">
+                <a href="/Account/KnowledgeBases" class="pa-btn pa-btn-ghost">Cancel</a>
+                <button type="submit" class="pa-btn pa-btn-primary pa-btn-large">
+                    Create knowledge base <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+
+        </div>
+
+        <!-- =============================================
+             RIGHT: Sticky live preview
+             ============================================= -->
+        <aside class="ckb-preview">
+            <div class="ckb-preview-sticky">
+                <h3 class="ckb-preview-title">Live preview</h3>
+                <p class="ckb-preview-sub">This is how it will look in your sidebar.</p>
+
+                <div class="ckb-preview-card" data-ckb-preview data-color="blue" data-icon="fa-file-alt">
+                    <div class="ckb-preview-icon">
+                        <i class="fas fa-file-alt" data-ckb-preview-icon></i>
+                    </div>
+                    <div class="ckb-preview-info">
+                        <strong data-ckb-preview-name>Untitled knowledge base</strong>
+                        <small data-ckb-preview-desc>Add a description...</small>
+                    </div>
+                    <span class="ckb-preview-badge">New</span>
+                </div>
+
+                <div class="ckb-tips">
+                    <div class="ckb-tip">
+                        <span class="ckb-tip-icon"><i class="fas fa-lightbulb"></i></span>
+                        <div>
+                            <strong>Pro tip</strong>
+                            <p>You can add documents right after creating the base.</p>
+                        </div>
+                    </div>
+                    <div class="ckb-tip">
+                        <span class="ckb-tip-icon purple"><i class="fas fa-lock"></i></span>
+                        <div>
+                            <strong>Private by default</strong>
+                            <p>You can change visibility anytime in settings.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        (function () {
+            'use strict';
+
+            // ---------- Live preview: name ----------
+            var nameInput   = document.querySelector('[data-ckb-name-input]');
+            var previewName = document.querySelector('[data-ckb-preview-name]');
+
+            if (nameInput && previewName) {
+                nameInput.addEventListener('input', function () {
+                    var v = (nameInput.value || '').trim();
+                    previewName.textContent = v || 'Untitled knowledge base';
+                });
+            }
+
+            // ---------- Live preview: description ----------
+            var descInput   = document.querySelector('[data-ckb-desc-input]');
+            var previewDesc = document.querySelector('[data-ckb-preview-desc]');
+
+            if (descInput && previewDesc) {
+                descInput.addEventListener('input', function () {
+                    var v = (descInput.value || '').trim();
+                    previewDesc.textContent = v || 'Add a description...';
+                });
+            }
+
+            // ---------- Color picker ----------
+            var colorPicker = document.querySelector('[data-ckb-color-picker]');
+            var colorHidden = document.querySelector('[data-ckb-color-input]');
+            var previewCard = document.querySelector('[data-ckb-preview]');
+
+            if (colorPicker && previewCard) {
+                colorPicker.querySelectorAll('.ckb-color').forEach(function (btn) {
+                    btn.addEventListener('click', function () {
+                        colorPicker.querySelectorAll('.ckb-color').forEach(function (b) {
+                            b.classList.remove('active');
+                        });
+                        btn.classList.add('active');
+
+                        var color = btn.dataset.color;
+                        if (colorHidden) colorHidden.value = color;
+                        previewCard.setAttribute('data-color', color);
+                    });
+                });
+            }
+
+            // ---------- Icon picker ----------
+            var iconPicker = document.querySelector('[data-ckb-icon-picker]');
+            var iconHidden = document.querySelector('[data-ckb-icon-input]');
+            var previewIcon = document.querySelector('[data-ckb-preview-icon]');
+
+            if (iconPicker && previewIcon) {
+                iconPicker.querySelectorAll('.ckb-icon').forEach(function (btn) {
+                    btn.addEventListener('click', function () {
+                        iconPicker.querySelectorAll('.ckb-icon').forEach(function (b) {
+                            b.classList.remove('active');
+                        });
+                        btn.classList.add('active');
+
+                        var icon = btn.dataset.icon;
+                        if (iconHidden) iconHidden.value = icon;
+                        previewIcon.className = 'fas ' + icon;
+                    });
+                });
+            }
+        })();
+    </script>
+}

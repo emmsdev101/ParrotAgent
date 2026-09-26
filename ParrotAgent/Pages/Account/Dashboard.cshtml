@@ -1,0 +1,178 @@
+﻿@page "/Accout/Dashboard";
+@using Microsoft.AspNetCore.Authorization;
+@model ParrotAgent.Pages.Account.DashboardModel
+
+@attribute [Authorize];
+
+@using ParrotAgent.Services;
+@inject IUserContext UserContext
+
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true" />
+}
+
+<!-- ============ Page header ============ -->
+<header class="dash-header">
+    <div>
+        <h1 class="dash-title">Welcome back, @UserContext.Name 👋</h1>
+        <p class="dash-subtitle">Here's what's happening across your workspace today.</p>
+    </div>
+    <div class="dash-header-actions">
+        <button type="button" class="pa-btn pa-btn-outline">
+            <i class="far fa-calendar"></i> Last 30 days
+        </button>
+        <a href="/Account/CreateKnowledgeBase" class="pa-btn pa-btn-primary">
+            <i class="fas fa-plus"></i> New knowledge base
+        </a>
+    </div>
+</header>
+
+<!-- ============ Stat cards ============ -->
+<section class="dash-stats">
+    <div class="stat-card">
+        <div class="stat-card-icon blue"><i class="fas fa-layer-group"></i></div>
+        <div class="stat-card-body">
+            <span class="stat-card-label">Knowledge bases</span>
+            <span class="stat-card-value">8</span>
+            <span class="stat-card-trend up"><i class="fas fa-arrow-up"></i> 2 this month</span>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-card-icon purple"><i class="fas fa-file-alt"></i></div>
+        <div class="stat-card-body">
+            <span class="stat-card-label">Documents</span>
+            <span class="stat-card-value">142</span>
+            <span class="stat-card-trend up"><i class="fas fa-arrow-up"></i> 18 new</span>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-card-icon green"><i class="fas fa-search"></i></div>
+        <div class="stat-card-body">
+            <span class="stat-card-label">Searches this month</span>
+            <span class="stat-card-value">2,401</span>
+            <span class="stat-card-trend up"><i class="fas fa-arrow-up"></i> 12%</span>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-card-icon amber"><i class="fas fa-users"></i></div>
+        <div class="stat-card-body">
+            <span class="stat-card-label">Team members</span>
+            <span class="stat-card-value">12</span>
+            <span class="stat-card-trend neutral">+3 invited</span>
+        </div>
+    </div>
+</section>
+
+<!-- ============ Two-column grid ============ -->
+<div class="dash-grid">
+
+    <!-- Left: Recent knowledge bases -->
+    <section class="dash-card">
+        <header class="dash-card-header">
+            <h2>Recent knowledge bases</h2>
+            <a href="#" class="dash-card-link">View all <i class="fas fa-arrow-right"></i></a>
+        </header>
+
+        <ul class="kb-list">
+            <li class="kb-row">
+                <div class="kb-row-icon blue"><i class="fas fa-file-alt"></i></div>
+                <div class="kb-row-info">
+                    <strong>Product Documentation</strong>
+                    <small>24 documents · Updated 2h ago</small>
+                </div>
+                <div class="kb-row-meta">
+                    <span class="kb-status active"><i class="fas fa-circle"></i> Active</span>
+                </div>
+            </li>
+            <li class="kb-row">
+                <div class="kb-row-icon purple"><i class="fas fa-users"></i></div>
+                <div class="kb-row-info">
+                    <strong>HR &amp; Onboarding</strong>
+                    <small>18 documents · Updated 1d ago</small>
+                </div>
+                <div class="kb-row-meta">
+                    <span class="kb-status synced"><i class="fas fa-sync-alt"></i> Synced</span>
+                </div>
+            </li>
+            <li class="kb-row">
+                <div class="kb-row-icon green"><i class="fas fa-code"></i></div>
+                <div class="kb-row-info">
+                    <strong>Engineering Wiki</strong>
+                    <small>42 documents · Updated 3h ago</small>
+                </div>
+                <div class="kb-row-meta">
+                    <span class="kb-status new"><i class="fas fa-cloud-upload-alt"></i> 5 new</span>
+                </div>
+            </li>
+            <li class="kb-row">
+                <div class="kb-row-icon amber"><i class="fas fa-bullhorn"></i></div>
+                <div class="kb-row-info">
+                    <strong>Marketing Playbook</strong>
+                    <small>31 documents · Updated 5h ago</small>
+                </div>
+                <div class="kb-row-meta">
+                    <span class="kb-status active"><i class="fas fa-circle"></i> Active</span>
+                </div>
+            </li>
+        </ul>
+    </section>
+
+    <!-- Right: Recent activity -->
+    <section class="dash-card">
+        <header class="dash-card-header">
+            <h2>Recent activity</h2>
+            <a href="#" class="dash-card-link">View all <i class="fas fa-arrow-right"></i></a>
+        </header>
+
+        <ul class="activity-list">
+            <li class="activity-item">
+                <span class="activity-avatar" style="background: linear-gradient(135deg, #3b82f6, #8b5cf6);">M</span>
+                <div class="activity-body">
+                    <p><strong>Marcus</strong> uploaded <em>pricing-strategy.pdf</em> to Product Documentation</p>
+                    <small>12 minutes ago</small>
+                </div>
+            </li>
+            <li class="activity-item">
+                <span class="activity-avatar" style="background: linear-gradient(135deg, #8b5cf6, #ec4899);">A</span>
+                <div class="activity-body">
+                    <p><strong>Aisha</strong> created a new knowledge base <em>Customer Success</em></p>
+                    <small>1 hour ago</small>
+                </div>
+            </li>
+            <li class="activity-item">
+                <span class="activity-avatar" style="background: linear-gradient(135deg, #f59e0b, #ef4444);">R</span>
+                <div class="activity-body">
+                    <p><strong>Ryan</strong> updated <em>engineering-onboarding.md</em> in Engineering Wiki</p>
+                    <small>3 hours ago</small>
+                </div>
+            </li>
+            <li class="activity-item">
+                <span class="activity-avatar" style="background: linear-gradient(135deg, #16a34a, #0ea5e9);">J</span>
+                <div class="activity-body">
+                    <p><strong>Jane</strong> added 3 new team members to the workspace</p>
+                    <small>Yesterday</small>
+                </div>
+            </li>
+        </ul>
+    </section>
+
+</div>
+
+<!-- ============ Upload drop zone ============ -->
+<section class="dash-upload">
+    <div class="dash-upload-inner">
+        <div class="dash-upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+        <div class="dash-upload-text">
+            <strong>Drop documents here to upload</strong>
+            <span>Support for PDF, DOCX, TXT, MD, and 20+ more formats.</span>
+        </div>
+        <button type="button" class="pa-btn pa-btn-primary">
+            <i class="fas fa-folder-open"></i> Browse files
+        </button>
+    </div>
+</section>

@@ -1,0 +1,193 @@
+﻿@page "/"
+
+@* Views/Home/Index.cshtml *@
+@{
+    ViewData["Title"] = "Home";
+}
+
+<!-- ============ HERO SECTION ============ -->
+<section class="hero-section">
+    <div class="pa-container">
+        <div class="hero">
+            <div class="hero-content">
+                <span class="badge">
+                    <i class="fas fa-sparkles"></i> New · AI-powered document insights
+                </span>
+                <h1>
+                    Build your <span>knowledge base</span>,<br>
+                    one document at a time.
+                </h1>
+                <p>
+                    Create dedicated knowledge bases, upload documents, and let your team
+                    find answers instantly. Simple, secure, and built for modern teams.
+                </p>
+                <div class="hero-actions">
+                    <a href="/register" class="pa-btn pa-btn-primary pa-btn-large">
+                        Create free account <i class="fas fa-arrow-right"></i>
+                    </a>
+                    <a href="#" class="pa-btn pa-btn-outline pa-btn-large">
+                        <i class="fas fa-play-circle"></i> Watch demo
+                    </a>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">10k+</span>
+                        <span class="stat-label">Active knowledge bases</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">2.4M</span>
+                        <span class="stat-label">Documents uploaded</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">99.9%</span>
+                        <span class="stat-label">Uptime guarantee</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Mockup -->
+            <div class="hero-visual">
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h4>Your knowledge bases</h4>
+                        <i class="fas fa-ellipsis-h"></i>
+                    </div>
+                    <div class="kb-list">
+                        <div class="kb-item">
+                            <div class="kb-icon"><i class="fas fa-file-alt"></i></div>
+                            <div class="kb-info">
+                                <h5>Product Documentation</h5>
+                                <p><i class="fas fa-file"></i> 24 documents · Updated 2h ago</p>
+                            </div>
+                            <div class="file-badge"><i class="fas fa-check-circle"></i> Active</div>
+                        </div>
+                        <div class="kb-item">
+                            <div class="kb-icon purple"><i class="fas fa-users"></i></div>
+                            <div class="kb-info">
+                                <h5>HR &amp; Onboarding</h5>
+                                <p><i class="fas fa-file"></i> 18 documents · Updated 1d ago</p>
+                            </div>
+                            <div class="file-badge purple"><i class="fas fa-sync-alt"></i> Synced</div>
+                        </div>
+                        <div class="kb-item">
+                            <div class="kb-icon green"><i class="fas fa-code"></i></div>
+                            <div class="kb-info">
+                                <h5>Engineering Wiki</h5>
+                                <p><i class="fas fa-file"></i> 42 documents · Updated 3h ago</p>
+                            </div>
+                            <div class="file-badge green"><i class="fas fa-cloud-upload-alt"></i> 5 new</div>
+                        </div>
+                    </div>
+                    <div class="upload-indicator">
+                        <span><i class="fas fa-cloud-upload-alt"></i> Drop files to upload</span>
+                        <i class="fas fa-plus-circle plus"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============ TRUSTED BY ============ -->
+<section class="trusted-section">
+    <div class="pa-container">
+        <p class="trusted-label">Trusted by knowledge teams at</p>
+        <div class="trusted-logos">
+            <span><i class="fas fa-cube"></i> AcmeCorp</span>
+            <span><i class="fas fa-bolt"></i> Boltline</span>
+            <span><i class="fas fa-rocket"></i> Launchpad</span>
+            <span><i class="fas fa-leaf"></i> Verdant</span>
+            <span><i class="fas fa-globe"></i> Orbit</span>
+        </div>
+    </div>
+</section>
+
+<!-- ============ FEATURES ============ -->
+<section class="features-section">
+    <div class="pa-container">
+        <div class="section-header">
+            <span class="badge"><i class="fas fa-layer-group"></i> Everything you need</span>
+            <h2>Knowledge management, simplified</h2>
+            <p>
+                From creating your first knowledge base to uploading thousands of documents —
+                we've got you covered.
+            </p>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-folder-plus"></i></div>
+                <h3>Create unlimited bases</h3>
+                <p>
+                    Organize knowledge into dedicated spaces for teams, projects, or topics.
+                    No limits on how many you can create.
+                </p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon purple"><i class="fas fa-cloud-upload-alt"></i></div>
+                <h3>Bulk document upload</h3>
+                <p>
+                    Drag and drop PDFs, Word docs, text files, and more. We support 20+ formats
+                    and index everything automatically.
+                </p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon green"><i class="fas fa-search"></i></div>
+                <h3>Instant AI search</h3>
+                <p>
+                    Find answers across all your documents in milliseconds. Semantic search
+                    understands context, not just keywords.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============ HOW IT WORKS ============ -->
+<section class="how-section">
+    <div class="pa-container">
+        <div class="section-header">
+            <span class="badge"><i class="fas fa-route"></i> How it works</span>
+            <h2>Up and running in minutes</h2>
+            <p>Three simple steps from scattered files to a searchable knowledge base.</p>
+        </div>
+
+        <div class="steps-grid">
+            <div class="step-card">
+                <div class="step-number">1</div>
+                <h3>Create a base</h3>
+                <p>Spin up a new knowledge base for a team, project, or topic in seconds.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-number">2</div>
+                <h3>Upload documents</h3>
+                <p>Drag and drop your files — PDFs, docs, spreadsheets, and more.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-number">3</div>
+                <h3>Search &amp; share</h3>
+                <p>Your team finds answers instantly with AI-powered search.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============ CTA SECTION ============ -->
+<section class="cta-section-wrap">
+    <div class="pa-container">
+        <div class="cta-section">
+            <div class="cta-content">
+                <h2>Start building your knowledge base today</h2>
+                <p>
+                    Join thousands of teams who organize, share, and discover knowledge
+                    with ParrotAgent.
+                </p>
+            </div>
+            <div class="cta-actions">
+                <a href="#" class="pa-btn pa-btn-primary pa-btn-large">
+                    Get started for free <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>

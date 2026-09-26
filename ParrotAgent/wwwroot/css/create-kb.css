@@ -1,0 +1,587 @@
+﻿/* =========================================================
+   ParrotAgent — Create Knowledge Base
+   wwwroot/css/create-kb.css
+   ========================================================= */
+
+/* ---------- Page header ---------- */
+.ckb-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+}
+
+.ckb-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.82rem;
+    color: #94a3b8;
+    margin-bottom: 10px;
+}
+
+    .ckb-breadcrumb a {
+        color: #64748b;
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+        .ckb-breadcrumb a:hover {
+            color: #2563eb;
+        }
+
+    .ckb-breadcrumb i {
+        font-size: 0.6rem;
+        color: #cbd5e1;
+    }
+
+    .ckb-breadcrumb span {
+        color: #0f172a;
+        font-weight: 600;
+    }
+
+.ckb-title {
+    font-size: 1.65rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: #0b1b33;
+    margin: 0 0 4px;
+}
+
+.ckb-subtitle {
+    font-size: 0.95rem;
+    color: #64748b;
+    margin: 0;
+}
+
+/* ---------- Two-column layout ---------- */
+.ckb-form {
+    display: block;
+}
+
+.ckb-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 360px;
+    gap: 24px;
+    align-items: start;
+}
+
+.ckb-main {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-width: 0;
+}
+
+/* ---------- Cards ---------- */
+.ckb-card {
+    background: #ffffff;
+    border: 1px solid #edf2f7;
+    border-radius: 18px;
+    padding: 28px;
+}
+
+.ckb-card-header {
+    margin-bottom: 22px;
+}
+
+    .ckb-card-header h2 {
+        font-size: 1.05rem;
+        font-weight: 600;
+        color: #0f172a;
+        margin: 0 0 4px;
+    }
+
+    .ckb-card-header p {
+        font-size: 0.85rem;
+        color: #64748b;
+        margin: 0;
+    }
+
+/* ---------- Fields ---------- */
+.ckb-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+    .ckb-field:last-child {
+        margin-bottom: 0;
+    }
+
+    .ckb-field label {
+        font-size: 0.86rem;
+        font-weight: 600;
+        color: #1e293b;
+    }
+
+.ckb-required {
+    color: #ef4444;
+    margin-left: 2px;
+}
+
+.ckb-input {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: 1.5px solid #e2e8f0;
+    background: #f9fafc;
+    font-family: inherit;
+    font-size: 0.92rem;
+    color: #0f172a;
+    transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+    outline: none;
+    box-sizing: border-box;
+}
+
+    .ckb-input::placeholder {
+        color: #94a3b8;
+    }
+
+    .ckb-input:hover {
+        border-color: #cbd5e1;
+        background: #ffffff;
+    }
+
+    .ckb-input:focus {
+        border-color: #2563eb;
+        background: #ffffff;
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+    }
+
+.ckb-textarea {
+    resize: vertical;
+    min-height: 90px;
+    font-family: inherit;
+    line-height: 1.5;
+}
+
+.ckb-hint {
+    font-size: 0.78rem;
+    color: #94a3b8;
+}
+
+/* ---------- Select ---------- */
+.ckb-select-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+    .ckb-select-wrap > i:first-child {
+        position: absolute;
+        left: 16px;
+        color: #94a3b8;
+        font-size: 0.85rem;
+        pointer-events: none;
+    }
+
+.ckb-select {
+    appearance: none;
+    -webkit-appearance: none;
+    padding-left: 42px;
+    padding-right: 42px;
+    cursor: pointer;
+}
+
+.ckb-select-caret {
+    position: absolute;
+    right: 16px;
+    color: #94a3b8;
+    font-size: 0.75rem;
+    pointer-events: none;
+}
+
+/* ---------- Color picker ---------- */
+.ckb-color-picker {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.ckb-color {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+    padding: 0;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+    position: relative;
+}
+
+    .ckb-color:hover {
+        transform: scale(1.08);
+    }
+
+    .ckb-color.active {
+        border-color: #0f172a;
+        box-shadow: 0 0 0 4px rgba(15, 23, 42, 0.08);
+    }
+
+        .ckb-color.active::after {
+            content: "\f00c";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            color: #ffffff;
+            font-size: 0.75rem;
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+    .ckb-color.blue {
+        background: #2563eb;
+    }
+
+    .ckb-color.purple {
+        background: #7c3aed;
+    }
+
+    .ckb-color.green {
+        background: #16a34a;
+    }
+
+    .ckb-color.amber {
+        background: #d97706;
+    }
+
+    .ckb-color.pink {
+        background: #db2777;
+    }
+
+    .ckb-color.slate {
+        background: #475569;
+    }
+
+/* ---------- Icon picker ---------- */
+.ckb-icon-picker {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.ckb-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    border: 1.5px solid #e2e8f0;
+    background: #ffffff;
+    color: #64748b;
+    font-size: 1rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+}
+
+    .ckb-icon:hover {
+        border-color: #cbd5e1;
+        color: #2563eb;
+        background: #f8fafc;
+    }
+
+    .ckb-icon.active {
+        border-color: #2563eb;
+        background: #eef4ff;
+        color: #2563eb;
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+    }
+
+/* ---------- Checkboxes ---------- */
+.ckb-check {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 14px 0;
+    border-top: 1px solid #f1f5f9;
+    cursor: pointer;
+    position: relative;
+}
+
+    .ckb-check:first-of-type {
+        border-top: none;
+        padding-top: 0;
+    }
+
+    .ckb-check:last-of-type {
+        padding-bottom: 0;
+    }
+
+    .ckb-check input {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+.ckb-check-box {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+    border: 1.5px solid #cbd5e1;
+    background: #ffffff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+    margin-top: 2px;
+}
+
+    .ckb-check-box i {
+        font-size: 0.62rem;
+        color: #ffffff;
+        opacity: 0;
+        transition: opacity 0.15s ease;
+    }
+
+.ckb-check input:checked + .ckb-check-box {
+    background: #2563eb;
+    border-color: #2563eb;
+}
+
+    .ckb-check input:checked + .ckb-check-box i {
+        opacity: 1;
+    }
+
+.ckb-check input:focus-visible + .ckb-check-box {
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+}
+
+.ckb-check-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+    .ckb-check-content strong {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #0f172a;
+    }
+
+    .ckb-check-content small {
+        font-size: 0.8rem;
+        color: #64748b;
+        line-height: 1.5;
+    }
+
+/* ---------- Actions ---------- */
+.ckb-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 4px 4px 0;
+}
+
+/* =========================================================
+   Live preview (right column)
+   ========================================================= */
+.ckb-preview-sticky {
+    position: sticky;
+    top: 88px;
+}
+
+.ckb-preview-title {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #94a3b8;
+    margin: 0 0 4px;
+}
+
+.ckb-preview-sub {
+    font-size: 0.82rem;
+    color: #64748b;
+    margin: 0 0 16px;
+}
+
+/* Preview card — mimics the sidebar KB item */
+.ckb-preview-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px;
+    border-radius: 16px;
+    background: #ffffff;
+    border: 1px solid #edf2f7;
+    box-shadow: 0 12px 28px -16px rgba(15, 23, 42, 0.12);
+    transition: box-shadow 0.2s ease;
+}
+
+.ckb-preview-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.05rem;
+    flex-shrink: 0;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.ckb-preview-info {
+    flex: 1;
+    min-width: 0;
+}
+
+    .ckb-preview-info strong {
+        display: block;
+        font-size: 0.92rem;
+        font-weight: 600;
+        color: #0f172a;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .ckb-preview-info small {
+        display: block;
+        font-size: 0.78rem;
+        color: #64748b;
+        margin-top: 2px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+.ckb-preview-badge {
+    background: #dcfce7;
+    color: #16a34a;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 100px;
+    flex-shrink: 0;
+}
+
+/* Colour variants — applied to the icon via [data-color] */
+.ckb-preview-card[data-color="blue"] .ckb-preview-icon {
+    background: #eef4ff;
+    color: #2563eb;
+}
+
+.ckb-preview-card[data-color="purple"] .ckb-preview-icon {
+    background: #f3eefe;
+    color: #7c3aed;
+}
+
+.ckb-preview-card[data-color="green"] .ckb-preview-icon {
+    background: #e7f9ef;
+    color: #16a34a;
+}
+
+.ckb-preview-card[data-color="amber"] .ckb-preview-icon {
+    background: #fef6e7;
+    color: #d97706;
+}
+
+.ckb-preview-card[data-color="pink"] .ckb-preview-icon {
+    background: #fce7f3;
+    color: #db2777;
+}
+
+.ckb-preview-card[data-color="slate"] .ckb-preview-icon {
+    background: #f1f5f9;
+    color: #475569;
+}
+
+/* ---------- Tips ---------- */
+.ckb-tips {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 22px;
+}
+
+.ckb-tip {
+    display: flex;
+    gap: 12px;
+    padding: 14px;
+    background: #f8fafc;
+    border-radius: 14px;
+    border: 1px solid #eef2f6;
+}
+
+.ckb-tip-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: #fef6e7;
+    color: #d97706;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+    .ckb-tip-icon.purple {
+        background: #f3eefe;
+        color: #7c3aed;
+    }
+
+.ckb-tip strong {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #0f172a;
+    margin-bottom: 2px;
+}
+
+.ckb-tip p {
+    font-size: 0.78rem;
+    color: #64748b;
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* =========================================================
+   Responsive
+   ========================================================= */
+@media (max-width: 1100px) {
+    .ckb-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ckb-preview {
+        order: -1;
+    }
+
+    .ckb-preview-sticky {
+        position: static;
+    }
+}
+
+@media (max-width: 640px) {
+    .ckb-title {
+        font-size: 1.35rem;
+    }
+
+    .ckb-card {
+        padding: 20px;
+    }
+
+    .ckb-actions {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+
+        .ckb-actions .pa-btn {
+            width: 100%;
+        }
+
+    .ckb-preview-card {
+        padding: 14px;
+    }
+}

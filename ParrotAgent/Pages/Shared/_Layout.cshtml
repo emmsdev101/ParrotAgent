@@ -1,0 +1,144 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="ParrotAgent — Create knowledge bases, upload documents, and let your team find answers instantly." />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ParrotAgent</title>
+
+    <script type="importmap"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/ParrotAgent.styles.css" asp-append-version="true" />
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+
+    <!-- Per-page styles -->
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+    <!-- ============ Top Navigation ============ -->
+    <header class="pa-header">
+        <div class="pa-container">
+            <nav class="pa-navbar">
+                <!-- Brand -->
+                <a class="pa-brand" href="/">
+                    <span class="pa-brand-icon"><i class="fas fa-feather-alt"></i></span>
+                    <span class="pa-brand-text">Parrot<span class="pa-brand-accent">Agent</span></span>
+                </a>
+
+ 
+                    <div class="pa-nav-links">
+                        <a href="/#product">Product</a>
+                        <a href="/#solutions">Solutions</a>
+                        <a href="/#pricing">Pricing</a>
+                        <a href="/#resources">Resources</a>
+                    </div>
+
+
+                <!-- User actions -->
+                <div class="pa-nav-actions">
+
+                        <a href="/login" class="pa-btn pa-btn-ghost">Sign in</a>
+                        <a href="/register" class="pa-btn pa-btn-primary">
+                            Get started <i class="fas fa-arrow-right"></i>
+                        </a>
+                    
+                </div>
+
+                <!-- Mobile toggle -->
+                <button class="pa-mobile-toggle" type="button" data-pa-mobile-toggle aria-label="Toggle navigation">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </nav>
+        </div>
+
+        <!-- Mobile menu -->
+        <div class="pa-mobile-menu" data-pa-mobile-menu>
+                <a href="/#product">Product</a>
+                <a href="/#solutions">Solutions</a>
+                <a href="/#pricing">Pricing</a>
+                <a href="/#resources">Resources</a>
+                <div class="pa-mobile-divider"></div>
+                <a asp-controller="Account" asp-action="Login">Sign in</a>
+                <a asp-controller="Account" asp-action="Register" class="pa-mobile-cta">Get started</a>
+            
+        </div>
+    </header>
+
+    <!-- ============ Main Content ============ -->
+    <main class="pa-main">
+        @RenderBody()
+    </main>
+
+    <!-- ============ Footer ============ -->
+    <footer class="pa-footer">
+        <div class="pa-container">
+            <div class="pa-footer-grid">
+                <!-- Brand column -->
+                <div class="pa-footer-brand">
+                    <a class="pa-brand" asp-controller="Home" asp-action="Index">
+                        <span class="pa-brand-icon"><i class="fas fa-feather-alt"></i></span>
+                        <span class="pa-brand-text">Parrot<span class="pa-brand-accent">Agent</span></span>
+                    </a>
+                    <p>Build knowledge bases. Upload documents. Find answers instantly.</p>
+                    <div class="pa-social">
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+
+                <!-- Link columns -->
+                <div class="pa-footer-col">
+                    <h4>Product</h4>
+                    <a href="#">Features</a>
+                    <a href="#">Pricing</a>
+                    <a href="#">Integrations</a>
+                    <a href="#">Changelog</a>
+                </div>
+                <div class="pa-footer-col">
+                    <h4>Company</h4>
+                    <a href="#">About</a>
+                    <a href="#">Blog</a>
+                    <a href="#">Careers</a>
+                    <a href="#">Contact</a>
+                </div>
+                <div class="pa-footer-col">
+                    <h4>Resources</h4>
+                    <a href="#">Documentation</a>
+                    <a href="#">API Reference</a>
+                    <a href="#">Community</a>
+                    <a href="#">Status</a>
+                </div>
+                <div class="pa-footer-col">
+                    <h4>Legal</h4>
+                    <a href="#">Privacy</a>
+                    <a href="#">Terms</a>
+                    <a href="#">Security</a>
+                    <a href="#">Cookies</a>
+                </div>
+            </div>
+
+            <div class="pa-footer-bottom">
+                <span>© @DateTime.Now.Year ParrotAgent. All rights reserved.</span>
+                <span class="pa-footer-meta">Made with <i class="fas fa-heart"></i> for knowledge teams</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ============ Scripts ============ -->
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

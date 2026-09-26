@@ -1,0 +1,131 @@
+﻿@using ParrotAgent.Services;
+
+@{
+    var title = ViewData["Title"] as string ?? "ParrotAgent";
+}
+
+@inject IUserContext UserContext
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@title — ParrotAgent</title>
+
+    <script type="importmap"></script>
+
+    <!-- Third-party first -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+    <!-- Global site styles -->
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/account-layout.css" asp-append-version="true" />
+
+    <!-- 🔑 CSS Isolation bundle — loads Account/_Layout.cshtml.css AND Shared/_Layout.cshtml.css -->
+    <link rel="stylesheet" href="~/ParrotAgent.styles.css" asp-append-version="true" />
+
+    @await RenderSectionAsync("Styles", required: false)
+
+</head>
+<body class="pa-account-body">
+    <header class="pa-account-topbar">
+        <div class="pa-account-topbar-inner">
+            <a class="pa-brand" asp-controller="Home" asp-action="Index">
+                <span class="pa-brand-icon"><i class="fas fa-feather-alt"></i></span>
+                <span class="pa-brand-text">Parrot<span class="pa-brand-accent">Agent</span></span>
+            </a>
+            <div class="pa-account-topbar-actions">
+                <a href="#" class="pa-icon-btn" title="Help"><i class="far fa-circle-question"></i></a>
+                <a href="#" class="pa-icon-btn" title="Notifications">
+                    <i class="far fa-bell"></i><span class="pa-dot"></span>
+                </a>
+                <a asp-controller="Home" asp-action="Index" class="pa-btn pa-btn-ghost">
+                    <i class="fas fa-arrow-left"></i> Back to site
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="pa-account-shell">
+        <aside class="pa-account-sidebar" data-pa-sidebar>
+            <div class="pa-account-sidebar-header">
+                <div class="pa-account-user">
+                    <span class="pa-avatar">JC</span>
+                    <div class="pa-account-user-info">
+                        <strong>@UserContext.Name</strong>
+                        <small>@UserContext.Email</small>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="pa-account-nav" aria-label="Account navigation">
+                <p class="pa-account-nav-title">Workspace</p>
+                <a asp-controller="KnowledgeBase" asp-action="Index" class="pa-account-nav-link">
+                    <i class="fas fa-layer-group"></i><span>Knowledge Bases</span>
+                    <span class="pa-account-nav-badge">8</span>
+                </a>
+                <a asp-controller="Documents" asp-action="Index" class="pa-account-nav-link">
+                    <i class="fas fa-file-alt"></i><span>Documents</span>
+                </a>
+                <a asp-controller="Search" asp-action="Index" class="pa-account-nav-link">
+                    <i class="fas fa-search"></i><span>Search</span>
+                </a>
+
+                <p class="pa-account-nav-title">Overview</p>
+                <a asp-controller="Account" asp-action="Profile" class="pa-account-nav-link">
+                    <i class="far fa-user"></i><span>Profile</span>
+                </a>
+                <a asp-controller="Account" asp-action="Settings" class="pa-account-nav-link">
+                    <i class="fas fa-sliders-h"></i><span>Preferences</span>
+                </a>
+
+
+                <p class="pa-account-nav-title">Account</p>
+                <a asp-controller="Account" asp-action="Billing" class="pa-account-nav-link">
+                    <i class="far fa-credit-card"></i><span>Billing</span>
+                </a>
+                <a asp-controller="Account" asp-action="Security" class="pa-account-nav-link">
+                    <i class="fas fa-shield-halved"></i><span>Security</span>
+                </a>
+                <a asp-controller="Account" asp-action="Team" class="pa-account-nav-link">
+                    <i class="fas fa-users"></i><span>Team</span>
+                </a>
+                <a asp-controller="Account" asp-action="Notifications" class="pa-account-nav-link">
+                    <i class="far fa-bell"></i><span>Notifications</span>
+                </a>
+            </nav>
+
+            <div class="pa-account-sidebar-footer">
+                <div class="pa-account-upgrade">
+                    <span class="pa-account-upgrade-icon"><i class="fas fa-bolt"></i></span>
+                    <div>
+                        <strong>Upgrade to Pro</strong>
+                        <small>Unlock AI-powered search.</small>
+                    </div>
+                    <a href="#" class="pa-account-upgrade-btn">Upgrade</a>
+                </div>
+            </div>
+        </aside>
+
+        <main class="pa-account-main" id="account-main">
+            <button class="pa-account-menu-btn" type="button" data-pa-sidebar-toggle aria-label="Toggle sidebar">
+                <i class="fas fa-bars"></i><span>Menu</span>
+            </button>
+            <div class="pa-account-content">
+                @RenderBody()
+            </div>
+        </main>
+    </div>
+
+    <div class="pa-account-overlay" data-pa-sidebar-overlay></div>
+
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/account-layout.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

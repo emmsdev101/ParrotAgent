@@ -1,0 +1,1090 @@
+﻿/* =========================================================
+   ParrotAgent — Knowledge Base View
+   wwwroot/css/kb-view.css
+   ========================================================= */
+
+/* ---------- Header ---------- */
+.kbv-header {
+    margin-bottom: 24px;
+}
+
+.kbv-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.82rem;
+    color: #94a3b8;
+    margin-bottom: 16px;
+}
+
+    .kbv-breadcrumb a {
+        color: #64748b;
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+        .kbv-breadcrumb a:hover {
+            color: #2563eb;
+        }
+
+    .kbv-breadcrumb i {
+        font-size: 0.6rem;
+        color: #cbd5e1;
+    }
+
+    .kbv-breadcrumb span {
+        color: #0f172a;
+        font-weight: 600;
+    }
+
+.kbv-header-main {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.kbv-header-left {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    flex: 1;
+    min-width: 0;
+}
+
+.kbv-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+    .kbv-icon.blue {
+        background: #eef4ff;
+        color: #2563eb;
+    }
+
+    .kbv-icon.purple {
+        background: #f3eefe;
+        color: #7c3aed;
+    }
+
+    .kbv-icon.green {
+        background: #e7f9ef;
+        color: #16a34a;
+    }
+
+.kbv-header-info {
+    min-width: 0;
+}
+
+.kbv-title {
+    font-size: 1.55rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: #0b1b33;
+    margin: 0 0 4px;
+}
+
+.kbv-desc {
+    font-size: 0.92rem;
+    color: #64748b;
+    margin: 0 0 12px;
+}
+
+.kbv-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.kbv-meta-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.82rem;
+    color: #64748b;
+}
+
+    .kbv-meta-item i {
+        font-size: 0.72rem;
+        color: #94a3b8;
+    }
+
+.kbv-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 100px;
+}
+
+    .kbv-badge i {
+        font-size: 0.6rem;
+    }
+
+    .kbv-badge.active {
+        background: #e6f0ff;
+        color: #2563eb;
+    }
+
+.kbv-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* ---------- Tabs ---------- */
+.kbv-tabs {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    border-bottom: 1px solid #e9eef3;
+    margin-bottom: 28px;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+    .kbv-tabs::-webkit-scrollbar {
+        display: none;
+    }
+
+.kbv-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: transparent;
+    border: none;
+    color: #64748b;
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    position: relative;
+    white-space: nowrap;
+    transition: color 0.15s ease;
+}
+
+    .kbv-tab i {
+        font-size: 0.85rem;
+        color: #94a3b8;
+        transition: color 0.15s ease;
+    }
+
+    .kbv-tab:hover {
+        color: #0f172a;
+    }
+
+        .kbv-tab:hover i {
+            color: #2563eb;
+        }
+
+    .kbv-tab.active {
+        color: #2563eb;
+        font-weight: 600;
+    }
+
+        .kbv-tab.active i {
+            color: #2563eb;
+        }
+
+        .kbv-tab.active::after {
+            content: "";
+            position: absolute;
+            left: 12px;
+            right: 12px;
+            bottom: -1px;
+            height: 2px;
+            background: #2563eb;
+            border-radius: 2px 2px 0 0;
+        }
+
+.kbv-tab-count {
+    background: #f1f5f9;
+    color: #64748b;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 100px;
+    line-height: 1.4;
+}
+
+.kbv-tab.active .kbv-tab-count {
+    background: #eef4ff;
+    color: #2563eb;
+}
+
+/* ---------- Panels ---------- */
+.kbv-panel {
+    display: none;
+}
+
+    .kbv-panel.active {
+        display: block;
+    }
+
+/* =========================================================
+   Drop zone
+   ========================================================= */
+.kbv-dropzone {
+    position: relative;
+    background: linear-gradient(135deg, #f8fbff 0%, #f0f6ff 100%);
+    border: 2px dashed #cbd5e1;
+    border-radius: 20px;
+    padding: 44px 32px;
+    text-align: center;
+    margin-bottom: 22px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+    .kbv-dropzone:hover {
+        border-color: #93c5fd;
+        background: linear-gradient(135deg, #f0f6ff 0%, #e6f0ff 100%);
+    }
+
+    .kbv-dropzone.dragover {
+        border-color: #2563eb;
+        background: linear-gradient(135deg, #e6f0ff 0%, #dbe7fe 100%);
+        transform: scale(1.005);
+        box-shadow: 0 0 0 6px rgba(37, 99, 235, 0.08);
+    }
+
+.kbv-dropzone-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.kbv-dropzone-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: #ffffff;
+    color: #2563eb;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+    box-shadow: 0 12px 24px -10px rgba(37, 99, 235, 0.3);
+    transition: transform 0.2s ease;
+}
+
+.kbv-dropzone.dragover .kbv-dropzone-icon {
+    transform: translateY(-4px) scale(1.06);
+}
+
+.kbv-dropzone h3 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #0f172a;
+    margin: 0;
+}
+
+.kbv-dropzone p {
+    font-size: 0.9rem;
+    color: #64748b;
+    margin: 0;
+}
+
+.kbv-dropzone-link {
+    background: none;
+    border: none;
+    color: #2563eb;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0;
+    text-decoration: underline;
+}
+
+    .kbv-dropzone-link:hover {
+        color: #1d4ed8;
+    }
+
+.kbv-dropzone small {
+    font-size: 0.78rem;
+    color: #94a3b8;
+    margin-top: 8px;
+}
+
+/* =========================================================
+   Upload queue
+   ========================================================= */
+.kbv-uploads {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 22px;
+}
+
+.kbv-upload-item {
+    display: grid;
+    grid-template-columns: 40px 1fr 140px 32px;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 14px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+    .kbv-upload-item.done {
+        border-color: #bbf7d0;
+        background: #f0fdf4;
+    }
+
+.kbv-upload-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: #eef4ff;
+    color: #2563eb;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+}
+
+.kbv-upload-item.done .kbv-upload-icon {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.kbv-upload-info {
+    min-width: 0;
+}
+
+    .kbv-upload-info strong {
+        display: block;
+        font-size: 0.88rem;
+        font-weight: 600;
+        color: #0f172a;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .kbv-upload-info small {
+        font-size: 0.75rem;
+        color: #64748b;
+    }
+
+.kbv-upload-progress {
+    height: 6px;
+    border-radius: 6px;
+    background: #f1f5f9;
+    overflow: hidden;
+}
+
+.kbv-upload-bar {
+    height: 100%;
+    width: 0;
+    background: linear-gradient(90deg, #2563eb, #7c3aed);
+    border-radius: inherit;
+    transition: width 0.15s linear, background 0.2s ease;
+}
+
+.kbv-upload-item.done .kbv-upload-bar {
+    background: linear-gradient(90deg, #16a34a, #0ea5e9);
+}
+
+.kbv-upload-remove {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    color: #94a3b8;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+    .kbv-upload-remove:hover {
+        background: #fee2e2;
+        color: #ef4444;
+    }
+
+/* =========================================================
+   Toolbar (search, sort, view)
+   ========================================================= */
+.kbv-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+}
+
+.kbv-search {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex: 0 1 340px;
+    min-width: 240px;
+}
+
+    .kbv-search > i {
+        position: absolute;
+        left: 14px;
+        color: #94a3b8;
+        font-size: 0.85rem;
+        pointer-events: none;
+    }
+
+    .kbv-search input {
+        width: 100%;
+        padding: 10px 16px 10px 40px;
+        border-radius: 12px;
+        border: 1.5px solid #e2e8f0;
+        background: #ffffff;
+        font-family: inherit;
+        font-size: 0.9rem;
+        color: #0f172a;
+        outline: none;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+        .kbv-search input::placeholder {
+            color: #94a3b8;
+        }
+
+        .kbv-search input:hover {
+            border-color: #cbd5e1;
+        }
+
+        .kbv-search input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+        }
+
+.kbv-toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.kbv-sort {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+    .kbv-sort > i:first-child {
+        position: absolute;
+        left: 12px;
+        color: #94a3b8;
+        font-size: 0.8rem;
+        pointer-events: none;
+    }
+
+    .kbv-sort select {
+        appearance: none;
+        -webkit-appearance: none;
+        padding: 9px 34px 9px 32px;
+        border-radius: 10px;
+        border: 1.5px solid #e2e8f0;
+        background: #ffffff;
+        font-family: inherit;
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: #1e293b;
+        cursor: pointer;
+        outline: none;
+    }
+
+        .kbv-sort select:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+        }
+
+.kbv-sort-caret {
+    position: absolute;
+    right: 12px;
+    color: #94a3b8;
+    font-size: 0.7rem;
+    pointer-events: none;
+}
+
+.kbv-view-toggle {
+    display: inline-flex;
+    background: #ffffff;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 3px;
+    gap: 2px;
+}
+
+    .kbv-view-toggle button {
+        width: 34px;
+        height: 30px;
+        border-radius: 7px;
+        background: transparent;
+        color: #94a3b8;
+        font-size: 0.85rem;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.15s ease;
+    }
+
+        .kbv-view-toggle button:hover {
+            color: #475569;
+        }
+
+        .kbv-view-toggle button.active {
+            background: #eef4ff;
+            color: #2563eb;
+        }
+
+/* =========================================================
+   Document grid
+   ========================================================= */
+.kbv-docs {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 14px;
+}
+
+.kbv-doc {
+    display: grid;
+    grid-template-columns: 44px 1fr auto auto;
+    align-items: center;
+    gap: 14px;
+    padding: 16px;
+    background: #ffffff;
+    border: 1px solid #edf2f7;
+    border-radius: 14px;
+    transition: all 0.15s ease;
+    position: relative;
+}
+
+    .kbv-doc:hover {
+        border-color: #dbe7fe;
+        box-shadow: 0 12px 26px -14px rgba(15, 23, 42, 0.14);
+        transform: translateY(-1px);
+    }
+
+.kbv-doc-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 11px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+    flex-shrink: 0;
+}
+
+    .kbv-doc-icon.pdf {
+        background: #fee2e2;
+        color: #dc2626;
+    }
+
+    .kbv-doc-icon.docx {
+        background: #dbeafe;
+        color: #2563eb;
+    }
+
+    .kbv-doc-icon.xlsx {
+        background: #dcfce7;
+        color: #16a34a;
+    }
+
+    .kbv-doc-icon.pptx {
+        background: #ffedd5;
+        color: #ea580c;
+    }
+
+    .kbv-doc-icon.md {
+        background: #f3eefe;
+        color: #7c3aed;
+    }
+
+.kbv-doc-info {
+    min-width: 0;
+}
+
+.kbv-doc-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #0f172a;
+    margin: 0 0 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.kbv-doc-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.76rem;
+    color: #64748b;
+    flex-wrap: wrap;
+}
+
+.kbv-doc-sep {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: #cbd5e1;
+}
+
+.kbv-doc-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.kbv-tag {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 100px;
+    background: #eef4ff;
+    color: #2563eb;
+    white-space: nowrap;
+}
+
+    .kbv-tag.purple {
+        background: #f3eefe;
+        color: #7c3aed;
+    }
+
+    .kbv-tag.green {
+        background: #dcfce7;
+        color: #16a34a;
+    }
+
+    .kbv-tag.amber {
+        background: #fef6e7;
+        color: #d97706;
+    }
+
+.kbv-doc-menu {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    color: #94a3b8;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+    .kbv-doc-menu:hover {
+        background: #f1f5f9;
+        color: #475569;
+    }
+
+/* List view */
+.kbv-docs.kbv-list {
+    grid-template-columns: 1fr;
+}
+
+.kbv-list .kbv-doc {
+    padding: 12px 16px;
+}
+
+.kbv-list .kbv-doc-tags {
+    display: none;
+}
+
+.kbv-list .kbv-doc {
+    grid-template-columns: 40px 1fr auto;
+}
+
+/* =========================================================
+   Empty panel (Activity/Members/Settings placeholders)
+   ========================================================= */
+.kbv-empty-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 80px 24px;
+    background: #ffffff;
+    border: 1px dashed #cbd5e1;
+    border-radius: 18px;
+    color: #64748b;
+}
+
+.kbv-empty-panel-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: #eef4ff;
+    color: #2563eb;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    margin-bottom: 16px;
+}
+
+.kbv-empty-panel h3 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #0f172a;
+    margin: 0 0 6px;
+}
+
+.kbv-empty-panel p {
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+/* =========================================================
+   Responsive
+   ========================================================= */
+@media (max-width: 900px) {
+    .kbv-header-main {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .kbv-header-actions {
+        width: 100%;
+    }
+
+        .kbv-header-actions .pa-btn {
+            flex: 1;
+        }
+
+    .kbv-docs {
+        grid-template-columns: 1fr;
+    }
+
+    .kbv-upload-item {
+        grid-template-columns: 40px 1fr 32px;
+    }
+
+    .kbv-upload-progress {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 640px) {
+    .kbv-title {
+        font-size: 1.3rem;
+    }
+
+    .kbv-icon {
+        width: 48px;
+        height: 48px;
+        font-size: 1.2rem;
+        border-radius: 12px;
+    }
+
+    .kbv-dropzone {
+        padding: 32px 20px;
+    }
+
+    .kbv-dropzone-icon {
+        width: 52px;
+        height: 52px;
+        font-size: 1.2rem;
+    }
+
+    .kbv-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .kbv-search {
+        flex: 1 1 100%;
+        min-width: 0;
+    }
+
+    .kbv-toolbar-right {
+        justify-content: space-between;
+    }
+
+    .kbv-doc {
+        grid-template-columns: 40px 1fr auto;
+    }
+
+    .kbv-doc-tags {
+        display: none;
+    }
+}
+/* =========================================================
+   Force-styled buttons — override Bootstrap defaults
+   ========================================================= */
+
+/* Generic reset for all our upload-related buttons */
+.kbv-upload-action,
+.kbv-uploads-cancel,
+.kbv-uploads-clear,
+.kbv-upload-cancel,
+.kbv-upload-retry,
+.kbv-upload-remove {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    font-family: inherit !important;
+    cursor: pointer !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    line-height: 1 !important;
+    text-decoration: none !important;
+    appearance: none !important;
+    -webkit-appearance: none !important;
+}
+
+/* Cancel-all / Clear-done text buttons in the header */
+.kbv-uploads-cancel,
+.kbv-uploads-clear {
+    padding: 6px 12px !important;
+    border-radius: 8px !important;
+    font-size: 0.82rem !important;
+    font-weight: 500 !important;
+}
+
+.kbv-uploads-cancel {
+    color: #ef4444 !important;
+}
+
+    .kbv-uploads-cancel:hover {
+        background: #fee2e2 !important;
+        color: #dc2626 !important;
+    }
+
+.kbv-uploads-clear {
+    color: #2563eb !important;
+}
+
+    .kbv-uploads-clear:hover {
+        background: #eef4ff !important;
+        color: #1d4ed8 !important;
+    }
+
+/* Square icon buttons on each row */
+.kbv-upload-action {
+    width: 30px !important;
+    height: 30px !important;
+    border-radius: 8px !important;
+    color: #94a3b8 !important;
+    font-size: 0.85rem !important;
+}
+
+    .kbv-upload-action:hover {
+        background: #f1f5f9 !important;
+        color: #475569 !important;
+    }
+
+.kbv-upload-cancel:hover {
+    background: #fee2e2 !important;
+    color: #ef4444 !important;
+}
+
+.kbv-upload-retry:hover {
+    background: #eef4ff !important;
+    color: #2563eb !important;
+}
+
+.kbv-upload-remove:hover {
+    background: #fee2e2 !important;
+    color: #ef4444 !important;
+}
+
+/* Also style the pa-btn family harder */
+.pa-btn {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    font-family: inherit !important;
+    text-decoration: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    border-radius: 40px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+}
+/* =========================================================
+   Force-clean all icon buttons — override Bootstrap & browser defaults
+   ========================================================= */
+
+/* ---- Document menu button (⋯) on each card ---- */
+.kbv-doc-menu {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    background: transparent !important;
+    border: 1px solid #e2e8f0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 8px !important;
+    color: #94a3b8 !important;
+    font-family: inherit !important;
+    font-size: 0.9rem !important;
+    line-height: 1 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+}
+
+    .kbv-doc-menu:hover {
+        background: #f1f5f9 !important;
+        color: #475569 !important;
+        border-color: #cbd5e1 !important;
+    }
+
+    .kbv-doc-menu:focus-visible {
+        outline: 2px solid #2563eb !important;
+        outline-offset: 2px !important;
+    }
+
+/* ---- View toggle buttons (grid / list) ---- */
+.kbv-view-toggle button {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 34px !important;
+    height: 30px !important;
+    border-radius: 7px !important;
+    color: #94a3b8 !important;
+    font-family: inherit !important;
+    font-size: 0.85rem !important;
+    line-height: 1 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    transition: background 0.15s ease, color 0.15s ease !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+}
+
+    .kbv-view-toggle button:hover {
+        color: #475569 !important;
+        background: #f1f5f9 !important;
+    }
+
+    .kbv-view-toggle button.active {
+        background: #eef4ff !important;
+        color: #2563eb !important;
+    }
+
+    .kbv-view-toggle button:focus-visible {
+        outline: 2px solid #2563eb !important;
+        outline-offset: 2px !important;
+    }
+
+/* ---- Upload action buttons (cancel/retry/remove) ---- */
+.kbv-upload-action {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 30px !important;
+    height: 30px !important;
+    border-radius: 8px !important;
+    color: #94a3b8 !important;
+    font-family: inherit !important;
+    font-size: 0.85rem !important;
+    line-height: 1 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    transition: background 0.15s ease, color 0.15s ease !important;
+    box-shadow: none !important;
+}
+
+.kbv-upload-cancel:hover {
+    background: #fee2e2 !important;
+    color: #ef4444 !important;
+}
+
+.kbv-upload-retry:hover {
+    background: #eef4ff !important;
+    color: #2563eb !important;
+}
+
+.kbv-upload-remove:hover {
+    background: #fee2e2 !important;
+    color: #ef4444 !important;
+}
+
+/* ---- Cancel all / Clear completed text buttons ---- */
+.kbv-uploads-cancel,
+.kbv-uploads-clear {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    background: transparent !important;
+    border: none !important;
+    font-family: inherit !important;
+    font-size: 0.82rem !important;
+    font-weight: 500 !important;
+    padding: 6px 12px !important;
+    border-radius: 8px !important;
+    cursor: pointer !important;
+    transition: background 0.15s ease, color 0.15s ease !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    line-height: 1.2 !important;
+}
+
+.kbv-uploads-cancel {
+    color: #ef4444 !important;
+}
+
+    .kbv-uploads-cancel:hover {
+        background: #fee2e2 !important;
+        color: #dc2626 !important;
+    }
+
+.kbv-uploads-clear {
+    color: #2563eb !important;
+}
+
+    .kbv-uploads-clear:hover {
+        background: #eef4ff !important;
+        color: #1d4ed8 !important;
+    }
+
+/* ---- Sort select ---- */
+.kbv-sort select {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    background: #ffffff !important;
+    border: 1.5px solid #e2e8f0 !important;
+    font-family: inherit !important;
+    cursor: pointer !important;
+}
