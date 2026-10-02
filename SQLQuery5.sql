@@ -1,0 +1,1 @@
+SELECT Id, TextContent FROM DocumentChunks

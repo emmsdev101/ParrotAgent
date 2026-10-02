@@ -1,10 +1,13 @@
 ﻿using Hangfire;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ParrotAgent.Database;
 using ParrotAgent.Models;
 using ParrotAgent.Services;
+using ParrotAgent.Utilities;
+using System.Runtime.CompilerServices;
 using System.Security.Claims;
 
 namespace ParrotAgent.Api
@@ -16,12 +19,19 @@ namespace ParrotAgent.Api
         private readonly AppDbContext _context;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IWebHostEnvironment _environment;
+        private readonly IEmbedder _embedder;
+        private readonly ILLM _llm;
 
-        public DocumentController(AppDbContext context, IHttpContextAccessor httpContextAccessor, IWebHostEnvironment environment)
+        public record AskRequest(string Message);
+        public record Citation(string type, string name);
+
+        public DocumentController(AppDbContext context, IHttpContextAccessor httpContextAccessor, IWebHostEnvironment environment, IEmbedder embedder, ILLM llm)
         {
             _context = context;
             _httpContextAccessor = httpContextAccessor;
             _environment = environment;
+            _embedder = embedder;
+            _llm = llm;
         }
 
         public async void EmbedDocument(int id, string filePath)
@@ -100,7 +110,53 @@ namespace ParrotAgent.Api
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Error saving file: {ex.Message}");
             }
         }
+        //[Authorize]
+        [HttpPost("{id}/ask")]
+        public async Task<IActionResult> Ask(int id, [FromBody] AskRequest askRequest)
+        {
+            string query = askRequest.Message;
+
+            string userId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            User user = await _context.Users?.FirstOrDefaultAsync(u => u.Id == int.Parse(userId));
+
+            var embeddedQueryData = await _embedder.GetEmbeddingsAsync(new List<string>{
+                query
+            });
+
+            float[] queryVectors = embeddedQueryData[0].Embedding;
+
+            var documentChunks = await _context.DocumentChunks
+                .Where(c => c.Document.UserId == int.Parse(userId) && c.Document.KnowledgeBaseId == id)
+                .Select(c => new
+                    {
+                        Chunk = c,
+
+                        Distance = EF.Functions.VectorDistance(
+                            "cosine",
+                            c.Embedding,
+                            new Microsoft.Data.SqlTypes.SqlVector<float>(queryVectors)
+                            )
+
+                    })
+                .Where(x => x.Distance <= 0.5)
+                .OrderBy(x => x.Distance)
+                .Take(30)
+                .ToListAsync();
+
+            List<string> contextChunks = documentChunks.Select(d => d.Chunk.TextContent).ToList();
+       
+
+            string answer = await _llm.RagChat(contextChunks, query);
+
+            var rs = new
+            {
+                answer = answer
+            };
 
 
+            return Json(rs);
+        }
+    
     }
 }

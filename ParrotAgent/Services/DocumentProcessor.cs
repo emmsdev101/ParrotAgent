@@ -1,8 +1,10 @@
 ﻿using System.Threading.Channels;
+using Microsoft.Data.SqlTypes;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ParrotAgent.Database;
 using ParrotAgent.Models;
+using ParrotAgent.Utilities;
 using UglyToad.PdfPig;
 using UglyToad.PdfPig.DocumentLayoutAnalysis.PageSegmenter;
 
@@ -24,11 +26,13 @@ namespace ParrotAgent.Services
 
         private readonly AppDbContext _appDbContext;
         private readonly ILogger<DocumentProcessor> _logger;
+        private readonly IEmbedder _embedder;
         
-        public DocumentProcessor(AppDbContext appDbContext, ILogger<DocumentProcessor> logger)
+        public DocumentProcessor(AppDbContext appDbContext, ILogger<DocumentProcessor> logger, IEmbedder embedder)
         {
             _appDbContext = appDbContext;
             _logger = logger;
+            _embedder = embedder;
         }
 
         public async Task EmbedDocumentAsync(int documentId, string filePath)
@@ -50,7 +54,9 @@ namespace ParrotAgent.Services
                 var documentBlocks = ExtractDocumentBlocks(filePath);
 
                 List<string> documentChunks = new List<string>();
+                var documentIndexPageMap = new Dictionary<int, int>();
 
+                int documentChunkIndex = 0;
                 foreach(var documentBlock in documentBlocks)
                 {
                     var blockChunks = CreateSemanticChunks(documentBlock.Content);
@@ -60,20 +66,43 @@ namespace ParrotAgent.Services
                     {
                         string textToEmbed = $"[Source: {filename} | Page: {pageNumber}]\n{blockChunk}";
                         documentChunks.Add(textToEmbed);
+                        documentIndexPageMap.Add(documentChunkIndex, int.Parse(pageNumber));
+                        documentChunkIndex++;
                     }
 
                 }
 
-                //TODO:IMPLEMENT EMBEDDING AND SAVING CHUNKS TO DB
+                var embeddings = await _embedder.GetEmbeddingsAsync(documentChunks);
 
-                // Write the documentChunks to json file for testing.
+                DocumentVector dvector = new DocumentVector();
+                dvector.Title = filename;
+                dvector.SourceUrl = filePath;
+                dvector.User = await _appDbContext.Users.FirstAsync(u => u.Id == document.UserId);
+                dvector.UserId = document.UserId;
+                dvector.KnowledgeBaseId = document.KnowledgeBaseId;
 
-                string combinedText = string.Join("\n\n--- CHUNK SEPARATOR ---\n\n", documentChunks);
+                _appDbContext.Add(dvector);
 
-                await File.WriteAllTextAsync("output.text", combinedText);
+                for(int i = 0; i < embeddings.Length; i++)
+                {
+                    int documentChunkEmbeddedIndex = embeddings[i].Index;
+                    float[] vectors = embeddings[i].Embedding;
+                    string rawText = documentChunks[documentChunkEmbeddedIndex];
+                    int pageNumber = documentIndexPageMap[documentChunkEmbeddedIndex];
 
+                    DocumentChunk dchunk = new DocumentChunk();
+                    dchunk.DocumentId = document.Id;
+                    dchunk.Document = dvector;
+                    dchunk.ChunkIndex = pageNumber;
+                    dchunk.Embedding = new SqlVector<float>(vectors);
+                    dchunk.TextContent = rawText;
+                    _appDbContext.Add(dchunk);
 
+                }
 
+                var result = await _appDbContext.SaveChangesAsync();
+
+                _logger.LogInformation("Sucessfully saved embedded documents. Total writes: "+result.ToString());
 
             }
             catch(Exception e)

@@ -13,8 +13,8 @@ using ParrotAgent.Database;
 namespace ParrotAgent.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260925180437_vectors")]
-    partial class vectors
+    [Migration("20260930082949_InitialCleanSchema5")]
+    partial class InitialCleanSchema5
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -112,7 +112,12 @@ namespace ParrotAgent.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("DocumentVectors");
                 });
@@ -202,10 +207,21 @@ namespace ParrotAgent.Migrations
                     b.HasOne("ParrotAgent.Models.DocumentVector", "Document")
                         .WithMany("Chunks")
                         .HasForeignKey("DocumentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Document");
+                });
+
+            modelBuilder.Entity("ParrotAgent.Models.DocumentVector", b =>
+                {
+                    b.HasOne("ParrotAgent.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("ParrotAgent.Models.DocumentVector", b =>

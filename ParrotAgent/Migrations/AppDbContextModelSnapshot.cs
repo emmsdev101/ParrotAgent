@@ -101,6 +101,9 @@ namespace ParrotAgent.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("KnowledgeBaseId")
+                        .HasColumnType("int");
+
                     b.Property<string>("SourceUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -109,7 +112,12 @@ namespace ParrotAgent.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("DocumentVectors");
                 });
@@ -199,10 +207,21 @@ namespace ParrotAgent.Migrations
                     b.HasOne("ParrotAgent.Models.DocumentVector", "Document")
                         .WithMany("Chunks")
                         .HasForeignKey("DocumentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Document");
+                });
+
+            modelBuilder.Entity("ParrotAgent.Models.DocumentVector", b =>
+                {
+                    b.HasOne("ParrotAgent.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("ParrotAgent.Models.DocumentVector", b =>
