@@ -11,7 +11,77 @@
     const segments = url.split('/').filter(Boolean);
     const id = segments[segments.length - 1];
 
-    var CHAT_ENDPOINT = '/api/knowledge-base/'+id+'/ask'
+    var CHAT_ENDPOINT = '/api/knowledge-base/' + id + '/ask'
+
+    var chatWidget = `
+<button type="button" class="kbv-chat-fab" data-kbv-chat-toggle aria-label="Open chat">
+    <i class="fas fa-comments"></i>
+</button>
+
+<aside class="kbv-chat" data-kbv-chat hidden>
+
+    <header class="kbv-chat-header">
+        <div class="kbv-chat-header-info">
+            <span class="kbv-chat-avatar">
+                <i class="fas fa-robot"></i>
+            </span>
+            <div>
+                <strong>Ask ParrotAgent</strong>
+                <small><span class="kbv-chat-online"></span> Online</small>
+            </div>
+        </div>
+        <div class="kbv-chat-header-actions">
+            <button type="button" class="kbv-chat-icon-btn" aria-label="New chat" data-kbv-chat-new>
+                <i class="fas fa-plus"></i>
+            </button>
+            <button type="button" class="kbv-chat-icon-btn" aria-label="Close chat" data-kbv-chat-close>
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </header>
+
+    <div class="kbv-chat-context">
+        <i class="fas fa-book"></i>
+        <span>Searching in <strong>@Model.UserKnowledgeBase.Name</strong></span>
+    </div>
+
+    <div class="kbv-chat-messages" data-kbv-chat-messages>
+
+        <div class="kbv-chat-msg bot">
+            <span class="kbv-chat-msg-avatar">
+                <i class="fas fa-robot"></i>
+            </span>
+            <div class="kbv-chat-bubble">
+                <p>Hi! I'm your knowledge base assistant. Ask me anything about the documents in this base.</p>
+                <div class="kbv-chat-suggestions">
+                    <button type="button" class="kbv-chat-suggestion" data-kbv-chat-suggestion>What's in this knowledge base?</button>
+                    <button type="button" class="kbv-chat-suggestion" data-kbv-chat-suggestion>Summarize the latest uploads</button>
+                    <button type="button" class="kbv-chat-suggestion" data-kbv-chat-suggestion>Find pricing information</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Typing indicator (hidden by default) -->
+        <div class="kbv-chat-typing" data-kbv-chat-typing hidden>
+            <span></span><span></span><span></span>
+        </div>
+    </div>
+
+
+    <form class="kbv-chat-composer" data-kbv-chat-form>
+        <textarea class="kbv-chat-input"
+                  data-kbv-chat-input
+                  placeholder="Ask a question..."
+                  rows="1"
+                  autocomplete="off"></textarea>
+        <button type="submit" class="kbv-chat-send" aria-label="Send">
+            <i class="fas fa-arrow-up"></i>
+        </button>
+    </form>
+
+</aside>`
+
+    document.body.insertAdjacentHTML('beforeend', chatWidget);
 
     var chat = document.querySelector('[data-kbv-chat]');
     var fab = document.querySelector('[data-kbv-chat-toggle]');
@@ -131,16 +201,16 @@
                 message: text
             })
         })
-        .then(function (r) { return r.json(); })
-        .then(function (data) {
-            hideTyping();
-            appendBotMessage(data.answer, data.citations || []);
-        })
-        .catch(function () {
-            hideTyping();
-            appendBotMessage('Sorry, something went wrong. Please try again.');
-        })
-        .finally(function () { isSending = false; });
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+                hideTyping();
+                appendBotMessage(data.answer, data.citations || []);
+            })
+            .catch(function () {
+                hideTyping();
+                appendBotMessage('Sorry, something went wrong. Please try again.');
+            })
+            .finally(function () { isSending = false; });
     }
 
     // ---------------------------------------------------------

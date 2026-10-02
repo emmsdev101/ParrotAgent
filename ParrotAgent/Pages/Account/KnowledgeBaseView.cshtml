@@ -6,6 +6,7 @@
 
 @section Styles {
     <link rel="stylesheet" href="~/css/kb-view.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/kb-chat.css" asp-append-version="true" />
 }
 
 <!-- Hidden: knowledge base id used by the uploader -->
@@ -249,81 +250,6 @@
 
     </li>
 </template>
-
-<!-- =========================================================
-     Chat panel (fixed right side, toggled by FAB)
-     ========================================================= -->
-<button type="button" class="kbv-chat-fab" data-kbv-chat-toggle aria-label="Open chat">
-    <i class="fas fa-comments"></i>
-    <span class="kbv-chat-fab-badge">3</span>
-</button>
-
-<aside class="kbv-chat" data-kbv-chat hidden>
-
-    <!-- Header -->
-    <header class="kbv-chat-header">
-        <div class="kbv-chat-header-info">
-            <span class="kbv-chat-avatar">
-                <i class="fas fa-robot"></i>
-            </span>
-            <div>
-                <strong>Ask ParrotAgent</strong>
-                <small><span class="kbv-chat-online"></span> Online</small>
-            </div>
-        </div>
-        <div class="kbv-chat-header-actions">
-            <button type="button" class="kbv-chat-icon-btn" aria-label="New chat" data-kbv-chat-new>
-                <i class="fas fa-plus"></i>
-            </button>
-            <button type="button" class="kbv-chat-icon-btn" aria-label="Close chat" data-kbv-chat-close>
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-    </header>
-
-    <!-- Context bar -->
-    <div class="kbv-chat-context">
-        <i class="fas fa-book"></i>
-        <span>Searching in <strong>@Model.UserKnowledgeBase.Name</strong></span>
-    </div>
-
-    <!-- Message list -->
-    <div class="kbv-chat-messages" data-kbv-chat-messages>
-
-        <!-- Bot greeting -->
-        <div class="kbv-chat-msg bot">
-            <span class="kbv-chat-msg-avatar">
-                <i class="fas fa-robot"></i>
-            </span>
-            <div class="kbv-chat-bubble">
-                <p>Hi! I'm your knowledge base assistant. Ask me anything about the documents in this base.</p>
-                <div class="kbv-chat-suggestions">
-                    <button type="button" class="kbv-chat-suggestion" data-kbv-chat-suggestion>What's in this knowledge base?</button>
-                    <button type="button" class="kbv-chat-suggestion" data-kbv-chat-suggestion>Summarize the latest uploads</button>
-                    <button type="button" class="kbv-chat-suggestion" data-kbv-chat-suggestion>Find pricing information</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Typing indicator (hidden by default) -->
-        <div class="kbv-chat-typing" data-kbv-chat-typing hidden>
-            <span></span><span></span><span></span>
-        </div>
-    </div>
-
-    <!-- Composer -->
-    <form class="kbv-chat-composer" data-kbv-chat-form>
-        <textarea class="kbv-chat-input"
-                  data-kbv-chat-input
-                  placeholder="Ask a question..."
-                  rows="1"
-                  autocomplete="off"></textarea>
-        <button type="submit" class="kbv-chat-send" aria-label="Send">
-            <i class="fas fa-arrow-up"></i>
-        </button>
-    </form>
-
-</aside>
 
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
