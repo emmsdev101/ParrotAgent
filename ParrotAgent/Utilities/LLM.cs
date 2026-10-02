@@ -11,16 +11,19 @@ namespace ParrotAgent.Utilities
     public class LLM : ILLM
     {
         private readonly ChatClient _chatClient;
+        private readonly IConfiguration _configuration;
         private readonly string _systemPromt =
             "You are an expert document management clerk."+
             "Given the following context, answer the users's query."+
             "If context is empty or does not contain the answer, do not use yor general knowledge;"+
             "respond with \"I cant find a relevant context to your question\"";
-        public LLM()
+        public LLM(IConfiguration iconfiguration)
         {
+            _configuration = iconfiguration;
+            string apiKey = _configuration["LLMApiKey"]??"";
             _chatClient = new ChatClient(
                 model:  "deepseek-chat",
-                credential:new System.ClientModel.ApiKeyCredential("sk-599462dd367b43399b9cf2c2073b6e15"),
+                credential:new System.ClientModel.ApiKeyCredential(apiKey),
                 options: new OpenAI.OpenAIClientOptions
                 {
                     Endpoint = new Uri("https://api.deepseek.com/v1")
