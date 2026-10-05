@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using ParrotAgent.Database;
 using ParrotAgent.Models;
-
+using ParrotAgent.Utilities;
 namespace ParrotAgent.Pages
 {
     public class RegisterModel : PageModel
@@ -37,7 +37,9 @@ namespace ParrotAgent.Pages
 
             await _context.SaveChangesAsync();
 
-            return RedirectToPage("/Index");
+            await SessionHandler.LoginUserAsync(HttpContext, NewUser);
+
+            return RedirectToPage("/Account/Dashboard");
         }
     }
 }

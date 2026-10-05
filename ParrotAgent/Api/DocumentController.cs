@@ -7,6 +7,8 @@ using ParrotAgent.Database;
 using ParrotAgent.Models;
 using ParrotAgent.Services;
 using ParrotAgent.Utilities;
+using Pgvector;
+using Pgvector.EntityFrameworkCore;
 using System.Runtime.CompilerServices;
 using System.Security.Claims;
 
@@ -132,11 +134,7 @@ namespace ParrotAgent.Api
                     {
                         Chunk = c,
 
-                        Distance = EF.Functions.VectorDistance(
-                            "cosine",
-                            c.Embedding,
-                            new Microsoft.Data.SqlTypes.SqlVector<float>(queryVectors)
-                            )
+                        Distance = c.Embedding.CosineDistance(new Vector(queryVectors))
 
                     })
                 .Where(x => x.Distance <= 0.5)
@@ -151,7 +149,13 @@ namespace ParrotAgent.Api
 
             var rs = new
             {
-                answer = answer
+                answer = answer,
+                vectors = documentChunks.Select(d => new
+                {
+                    d.Chunk.Id,
+                    d.Chunk.TextContent,
+                    d.Distance
+                }).ToList()
             };
 
 

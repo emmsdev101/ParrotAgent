@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using ParrotAgent.Database;
 using System.Security.Claims;
@@ -13,6 +15,7 @@ namespace ParrotAgent.Models
         {
             this.appDbContext = appDbContext;
         }
+
 
         private User? _currentUser;
 
@@ -35,5 +38,6 @@ namespace ParrotAgent.Models
             return _currentUser;
 
         }
+        
     }
 }

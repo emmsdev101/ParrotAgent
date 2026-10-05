@@ -1,6 +1,4 @@
-﻿using Microsoft.Data.SqlTypes; // Contains SqlVector
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using Pgvector;
 
 namespace ParrotAgent.Models
 {
@@ -28,7 +26,7 @@ namespace ParrotAgent.Models
         // Optional structure tracking (e.g., page 3, section 2)
         public int ChunkIndex { get; set; }
 
-        public SqlVector<float> Embedding { get; set; }
+        public Vector Embedding { get; set; }
     }
 
 }

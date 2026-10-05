@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using ParrotAgent.Services;
 using Hangfire;
 using ParrotAgent.Utilities;
+using Hangfire.PostgreSql;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,14 +37,18 @@ builder.Services.AddRazorPages(options =>
     options.Conventions.AuthorizeFolder("/Account");
 });
 
-var connectionString = builder.Configuration.GetConnectionString("DatabaseConnection");
+var connectionString = builder.Configuration["ExternalDbConnection"]??"";;
 
-builder.Services. AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
+builder.Services. AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString, npgOpts => npgOpts.UseVector()));
 builder.Services.AddHangfire(configuration => configuration 
 .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
 .UseSimpleAssemblyNameTypeSerializer()
 .UseRecommendedSerializerSettings()
-.UseSqlServerStorage(connectionString));
+.UsePostgreSqlStorage(options =>
+{
+    options.UseNpgsqlConnection(connectionString);
+}
+));
 
 builder.Services.AddHangfireServer();
 

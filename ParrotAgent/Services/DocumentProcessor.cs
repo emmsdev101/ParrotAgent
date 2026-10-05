@@ -1,12 +1,11 @@
-﻿using System.Threading.Channels;
-using Microsoft.Data.SqlTypes;
+﻿
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using ParrotAgent.Database;
 using ParrotAgent.Models;
 using ParrotAgent.Utilities;
 using UglyToad.PdfPig;
 using UglyToad.PdfPig.DocumentLayoutAnalysis.PageSegmenter;
+using Pgvector;
 
 namespace ParrotAgent.Services 
 {
@@ -94,7 +93,7 @@ namespace ParrotAgent.Services
                     dchunk.DocumentId = document.Id;
                     dchunk.Document = dvector;
                     dchunk.ChunkIndex = pageNumber;
-                    dchunk.Embedding = new SqlVector<float>(vectors);
+                    dchunk.Embedding = new Vector(vectors);
                     dchunk.TextContent = rawText;
                     _appDbContext.Add(dchunk);
 

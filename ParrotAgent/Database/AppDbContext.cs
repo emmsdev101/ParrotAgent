@@ -31,14 +31,16 @@ namespace ParrotAgent.Database
         {
             if (!optionsBuilder.IsConfigured)
             {
-                string connectionString = _configuration["ConnectionStrings:DatabaseConnection"]??"";
-                optionsBuilder.UseSqlServer(connectionString);  
+                string connectionString = _configuration["ExternalDbConnection"]??"";
+                optionsBuilder.UseNpgsql(connectionString, o => o.UseVector());  
             }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.HasPostgresExtension("vector");
 
             modelBuilder.Entity<DocumentVector>(entity =>
             {
