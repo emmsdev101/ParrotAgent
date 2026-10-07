@@ -42,12 +42,18 @@ namespace ParrotAgent.Pages.Account
                 return NotFound();
             }
 
+            if(user.OrganizationId == null)
+            {
+                return Forbid();
+            }
+
             Console.WriteLine($"User ID: {user.Id}, Email: {user.Email}");
 
             // all the properties of NewKnowledgeBase 
             Console.WriteLine($"NewKnowledgeBase Properties: Name: {NewKnowledgeBase.Name}, Description: {NewKnowledgeBase.Description}, CreatedAt: {NewKnowledgeBase.CreatedAt}");
 
             NewKnowledgeBase.UserId = user.Id;
+            NewKnowledgeBase.OrganizationId = user.OrganizationId ?? 0;
 
             _context.Add(NewKnowledgeBase);
 

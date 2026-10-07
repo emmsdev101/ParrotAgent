@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using ParrotAgent.Database;
+using ParrotAgent.Models;
 namespace ParrotAgent.Services
 {
 
@@ -9,6 +10,9 @@ namespace ParrotAgent.Services
         string Name { get; }
         string Initials { get; }
         bool IsAuthenticated { get; }
+        Organization? Organization { get; }
+        User? LoggedUser { get; }
+        string OrganizationInitials { get; }
     }
 
     public class UserContext : IUserContext
@@ -47,5 +51,9 @@ namespace ParrotAgent.Services
             }
         }
 
+        public User? LoggedUser => _httpContextAccessor.HttpContext?.RequestServices.GetService<AppDbContext>()?.Users.FirstOrDefault(u => u.Email == Email);
+        public Organization? Organization => _httpContextAccessor.HttpContext?.RequestServices.GetService<AppDbContext>()?.Organizations.FirstOrDefault(o => o.Id == LoggedUser.OrganizationId);
+
+        public string OrganizationInitials => Organization?.Name.Substring(0, 2).ToUpper() ?? "PA";
     }
 }

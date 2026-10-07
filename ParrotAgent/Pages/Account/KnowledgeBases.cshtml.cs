@@ -24,7 +24,7 @@ namespace ParrotAgent.Pages.Account
             string email = userSession.FindFirstValue(ClaimTypes.Email)??String.Empty;
             var UserLogged = _httpContextAccessor.HttpContext.RequestServices.GetService<AppDbContext>().Users.FirstOrDefault(u => u.Email == email);
 
-            UserKnowledgeBases = _context.KnowledgeBases.Where(kb => kb.UserId == UserLogged.Id).ToList(); 
+            UserKnowledgeBases = _context.KnowledgeBases.Where(kb => kb.UserId == UserLogged.Id || kb.OrganizationId == UserLogged.OrganizationId).ToList(); 
         }
     }
 }

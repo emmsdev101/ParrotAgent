@@ -59,10 +59,9 @@ namespace ParrotAgent.Pages.Account
             if (userLogged == null)
             {
                 return RedirectToPage("/login");
-               
             }
-            UserKnowledgeBase = await _appDbContext.KnowledgeBases.FirstOrDefaultAsync(kb => kb.UserId == userLogged.Id && kb.Id == id);
-            KnowledgeBaseDocuments = await _appDbContext.Documents.Where(d => d.KnowledgeBaseId == UserKnowledgeBase.Id).ToListAsync();
+            UserKnowledgeBase = await _appDbContext.KnowledgeBases.FirstOrDefaultAsync(kb => (kb.UserId == userLogged.Id || kb.OrganizationId == userLogged.OrganizationId) && kb.Id == id);
+            KnowledgeBaseDocuments = await _appDbContext.Documents.Where(d => d.KnowledgeBaseId == UserKnowledgeBase.Id && d.OrganizationId == userLogged.OrganizationId).ToListAsync();
 
             if(UserKnowledgeBase == null)
             {

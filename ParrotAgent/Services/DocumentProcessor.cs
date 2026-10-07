@@ -79,6 +79,7 @@ namespace ParrotAgent.Services
                 dvector.User = await _appDbContext.Users.FirstAsync(u => u.Id == document.UserId);
                 dvector.UserId = document.UserId;
                 dvector.KnowledgeBaseId = document.KnowledgeBaseId;
+                dvector.OrganizationId = document.OrganizationId;
 
                 _appDbContext.Add(dvector);
 

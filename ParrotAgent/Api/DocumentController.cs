@@ -47,8 +47,6 @@ namespace ParrotAgent.Api
             {
                 contents += line;
             }
-
-            
         }
 
 
@@ -57,11 +55,44 @@ namespace ParrotAgent.Api
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> UploadDocument(int id, [FromForm] IFormFile file, IJobQueue queue)
         {
-            int knowledgeBaseId = int.Parse((string)RouteData.Values["id"]);
-            string userId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            int knowledgeBaseId = int.Parse((string)RouteData.Values["id"] ?? "0");
+            string userId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "0";
+            if (!int.TryParse(userId, out int userIdInt))
+            {
+                return Unauthorized();
+            }
             if (file == null || file.Length == 0)
             {
                 return BadRequest("No file was uploaded or the file is empty.");
+            }
+            User? user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userIdInt);
+
+            if(user == null)
+            {
+                return Unauthorized();
+            }
+
+            KnowledgeBase? knowledgeBase = await _context.KnowledgeBases.FindAsync(knowledgeBaseId);
+
+            if(knowledgeBase == null)
+            {
+                return NotFound();
+            }
+
+            int knowledgeBaseUserId = knowledgeBase.UserId;
+
+            bool isOwner = knowledgeBaseUserId == userIdInt;
+
+            bool isMember = user.OrganizationId == knowledgeBase.OrganizationId;
+
+            if(!isOwner && !isMember)
+            {
+                return Json(new { error = "You are not authorized to upload documents to this knowledge base." });
+            }
+
+            if(!isOwner && !knowledgeBase.AllowMemberUploads)
+            {
+                return Json(new { error = "This knowledge base does not allow member uploads." });
             }
 
             var rawFileName = Path.GetFileName(file.FileName);
@@ -82,15 +113,15 @@ namespace ParrotAgent.Api
 
                 var document = new Document
                 {
-                    Id = 0, // Assuming the database will auto-generate this
+                    Id = 0,
                     Title = rawFileName,
-                    Metadata = $"{{\"size\": {file.Length}, \"uploadedBy\": \"{userId}\"}}",
+                    Size = file.Length,
                     FilePath = filePath,
                     ContentType = file.ContentType,
                     Status = "Uploaded",
                     KnowledgeBaseId = knowledgeBaseId,
                     UserId = int.Parse(userId),
-                    OrganizationId = 0,
+                    OrganizationId = knowledgeBase.OrganizationId ?? 0,
                     CreatedAt = DateTime.UtcNow
                 };
 
@@ -98,9 +129,6 @@ namespace ParrotAgent.Api
                 await _context.SaveChangesAsync();
 
                 queue.Enqueue<IDocumentProcessor>(processor => processor.EmbedDocumentAsync(document.Id, filePath));
-                
-
-                // 6. Return response with Document ID so the frontend can track background work
                 return Ok(new
                 {
                     documentId = document.Id,
@@ -119,9 +147,32 @@ namespace ParrotAgent.Api
         {
             string query = askRequest.Message;
 
-            string userId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            string userId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "0";
+            if (!int.TryParse(userId, out int userIdInt))
+            {
+                return Unauthorized();
+            }
 
-            User user = await _context.Users?.FirstOrDefaultAsync(u => u.Id == int.Parse(userId));
+            User? user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userIdInt);
+            KnowledgeBase? knowledgeBase = await _context.KnowledgeBases.FindAsync(id);
+
+            if(user == null)
+            {
+                return Unauthorized();
+            }
+
+            if(knowledgeBase == null)
+            {
+                return NotFound();
+            }
+
+            bool isOwner = knowledgeBase.UserId == userIdInt;
+            bool isMember = user.OrganizationId == knowledgeBase.OrganizationId;
+
+            if(!isOwner && !isMember)
+            {
+                return Json(new { error = "You are not authorized to ask questions in this knowledge base." });
+            }
 
             var embeddedQueryData = await _embedder.GetEmbeddingsAsync(new List<string>{
                 query
@@ -144,7 +195,6 @@ namespace ParrotAgent.Api
                 .ToListAsync();
 
             List<string> contextChunks = documentChunks.Select(d => d.Chunk.TextContent).ToList();
-       
 
             string answer = await _llm.RagChat(contextChunks, query);
 
