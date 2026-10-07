@@ -13,5 +13,6 @@
         public bool AllowMemberUploads { get; set; } = false; // Whether members can upload to the knowledge base
         public bool AllowMemberEditing { get; set; } = false; // Whether members can edit the knowledge base
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public int? OrganizationId { get; set; } = null; // Foreign key to Organization
     }
 }
