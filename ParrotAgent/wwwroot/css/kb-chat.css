@@ -2,6 +2,43 @@
    Chat panel
    ========================================================= */
 
+:host {
+    all: initial;
+    position: fixed;
+    inset: 0;
+    z-index: 2147483000;
+    pointer-events: none;
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    color: #0f172a;
+    line-height: 1.4;
+}
+
+:host *,
+:host *::before,
+:host *::after {
+    box-sizing: border-box;
+}
+
+.kbv-chat-fab,
+.kbv-chat,
+.kbv-chat-backdrop {
+    pointer-events: auto;
+}
+
+.kbv-chat-icon {
+    width: 1.15em;
+    height: 1.15em;
+    display: block;
+    pointer-events: none;
+}
+
+.kbv-chat-icon svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    fill: currentColor;
+}
+
 /* ---- Floating action button ---- */
 .kbv-chat-fab {
     position: fixed;
@@ -176,9 +213,12 @@
     color: #64748b;
 }
 
+    .kbv-chat-context .kbv-chat-icon,
     .kbv-chat-context i {
         color: #2563eb;
         font-size: 0.75rem;
+        width: 14px;
+        height: 14px;
     }
 
     .kbv-chat-context strong {
@@ -296,7 +336,8 @@
         border-color: #dbe7fe;
     }
 
-    .kbv-chat-citation i {
+    .kbv-chat-citation i,
+    .kbv-chat-citation .kbv-chat-icon {
         width: 30px;
         height: 30px;
         border-radius: 8px;

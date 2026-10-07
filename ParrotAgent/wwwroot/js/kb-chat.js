@@ -1,117 +1,195 @@
 ﻿/* =========================================================
    ParrotAgent — Knowledge Base Chat
-   wwwroot/js/kb-chat.js
+   In-app: cookie session, /api/knowledge-base/{id}/ask
+   Embedded: data-parrot-token, /api/embed/{token}/ask
    ========================================================= */
 (function () {
     'use strict';
 
-    const url = window.location.pathname;
+    if (window.__parrotKbChat) return;
+    window.__parrotKbChat = true;
 
-    // Get path segments without empty strings caused by trailing slashes
-    const segments = url.split('/').filter(Boolean);
-    const id = segments[segments.length - 1];
+    var script = document.currentScript;
+    if (!script) {
+        var scripts = document.querySelectorAll('script[src*="kb-chat.js"]');
+        script = scripts.length ? scripts[scripts.length - 1] : null;
+    }
+    if (!script) return;
 
-    var CHAT_ENDPOINT = '/api/knowledge-base/' + id + '/ask'
+    var scriptUrl = new URL(script.src, window.location.href);
+    var origin = scriptUrl.origin;
+    var token = (script.dataset.parrotToken || '').trim();
+    var embedMode = token.length > 0;
+    var endpoint;
+    var kbName;
 
-    var chatWidget = `
-<button type="button" class="kbv-chat-fab" data-kbv-chat-toggle aria-label="Open chat">
-    <i class="fas fa-comments"></i>
-</button>
+    if (embedMode) {
+        endpoint = origin + '/api/embed/' + encodeURIComponent(token) + '/ask';
+        kbName = (script.dataset.parrotName || '').trim() || 'this knowledge base';
+    } else {
+        var holder = document.querySelector('[data-kb-id]');
+        var id = holder && holder.getAttribute('data-kb-id');
+        if (!id) {
+            var segments = window.location.pathname.split('/').filter(Boolean);
+            id = segments[segments.length - 1] || '';
+        }
+        if (!id) return;
+        endpoint = '/api/knowledge-base/' + encodeURIComponent(id) + '/ask';
+        kbName = (holder && holder.getAttribute('data-kb-name')) || 'this knowledge base';
+    }
 
-<aside class="kbv-chat" data-kbv-chat hidden>
+    var ICONS = {
+        comments: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H9l-4 3.2V16H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></svg>',
+        robot: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 2h2v2h3a2 2 0 0 1 2 2v1h1a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h1V6a2 2 0 0 1 2-2h3V2zm-3 9a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm8 0a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM8 16h8v1.5a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1V16z"/></svg>',
+        plus: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5h2v6h6v2h-6v6h-2v-6H5v-2h6V5z"/></svg>',
+        close: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.4 5 12 10.6 17.6 5 19 6.4 13.4 12 19 17.6 17.6 19 12 13.4 6.4 19 5 17.6 10.6 12 5 6.4 6.4 5z"/></svg>',
+        book: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h9a3 3 0 0 1 3 3v14a2 2 0 0 0-2-2H5V3zm11 16a1 1 0 0 1 1 1H7.5A2.5 2.5 0 0 0 5 22.5V5h.2A2 2 0 0 1 7 6.8V19h9z"/></svg>',
+        send: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4l7 16-7-3.2L5 20l7-16z"/></svg>',
+        file: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h8l6 6v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm7 1.5V9h5.5L13 3.5z"/></svg>'
+    };
 
-    <header class="kbv-chat-header">
-        <div class="kbv-chat-header-info">
-            <span class="kbv-chat-avatar">
-                <i class="fas fa-robot"></i>
-            </span>
-            <div>
-                <strong>Ask ParrotAgent</strong>
-                <small><span class="kbv-chat-online"></span> Online</small>
-            </div>
-        </div>
-        <div class="kbv-chat-header-actions">
-            <button type="button" class="kbv-chat-icon-btn" aria-label="New chat" data-kbv-chat-new>
-                <i class="fas fa-plus"></i>
-            </button>
-            <button type="button" class="kbv-chat-icon-btn" aria-label="Close chat" data-kbv-chat-close>
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-    </header>
+    function icon(name) {
+        var el = document.createElement('span');
+        el.className = 'kbv-chat-icon';
+        el.innerHTML = ICONS[name] || ICONS.file;
+        return el;
+    }
 
-    <div class="kbv-chat-context">
-        <i class="fas fa-book"></i>
-        <span>Searching in <strong>@Model.UserKnowledgeBase.Name</strong></span>
-    </div>
+    var host = document.createElement('div');
+    host.setAttribute('data-parrot-chat', '');
+    var shadow = host.attachShadow({ mode: 'open' });
 
-    <div class="kbv-chat-messages" data-kbv-chat-messages>
+    var style = document.createElement('link');
+    style.rel = 'stylesheet';
+    style.href = origin + '/css/kb-chat.css';
+    shadow.appendChild(style);
 
-        <div class="kbv-chat-msg bot">
-            <span class="kbv-chat-msg-avatar">
-                <i class="fas fa-robot"></i>
-            </span>
-            <div class="kbv-chat-bubble">
-                <p>Hi! I'm your knowledge base assistant. Ask me anything about the documents in this base.</p>
-                <div class="kbv-chat-suggestions">
-                    <button type="button" class="kbv-chat-suggestion" data-kbv-chat-suggestion>What's in this knowledge base?</button>
-                    <button type="button" class="kbv-chat-suggestion" data-kbv-chat-suggestion>Summarize the latest uploads</button>
-                    <button type="button" class="kbv-chat-suggestion" data-kbv-chat-suggestion>Find pricing information</button>
-                </div>
-            </div>
-        </div>
+    var fab = document.createElement('button');
+    fab.type = 'button';
+    fab.className = 'kbv-chat-fab';
+    fab.setAttribute('aria-label', 'Open chat');
+    fab.appendChild(icon('comments'));
 
-        <!-- Typing indicator (hidden by default) -->
-        <div class="kbv-chat-typing" data-kbv-chat-typing hidden>
-            <span></span><span></span><span></span>
-        </div>
-    </div>
+    var chat = document.createElement('aside');
+    chat.className = 'kbv-chat';
+    chat.hidden = true;
 
+    var header = document.createElement('header');
+    header.className = 'kbv-chat-header';
 
-    <form class="kbv-chat-composer" data-kbv-chat-form>
-        <textarea class="kbv-chat-input"
-                  data-kbv-chat-input
-                  placeholder="Ask a question..."
-                  rows="1"
-                  autocomplete="off"></textarea>
-        <button type="submit" class="kbv-chat-send" aria-label="Send">
-            <i class="fas fa-arrow-up"></i>
-        </button>
-    </form>
+    var headerInfo = document.createElement('div');
+    headerInfo.className = 'kbv-chat-header-info';
+    var avatar = document.createElement('span');
+    avatar.className = 'kbv-chat-avatar';
+    avatar.appendChild(icon('robot'));
+    var titles = document.createElement('div');
+    var title = document.createElement('strong');
+    title.textContent = 'Ask ParrotAgent';
+    var status = document.createElement('small');
+    var online = document.createElement('span');
+    online.className = 'kbv-chat-online';
+    status.appendChild(online);
+    status.appendChild(document.createTextNode(' Online'));
+    titles.appendChild(title);
+    titles.appendChild(status);
+    headerInfo.appendChild(avatar);
+    headerInfo.appendChild(titles);
 
-</aside>`
+    var headerActions = document.createElement('div');
+    headerActions.className = 'kbv-chat-header-actions';
+    var newBtn = document.createElement('button');
+    newBtn.type = 'button';
+    newBtn.className = 'kbv-chat-icon-btn';
+    newBtn.setAttribute('aria-label', 'New chat');
+    newBtn.appendChild(icon('plus'));
+    var closeBtn = document.createElement('button');
+    closeBtn.type = 'button';
+    closeBtn.className = 'kbv-chat-icon-btn';
+    closeBtn.setAttribute('aria-label', 'Close chat');
+    closeBtn.appendChild(icon('close'));
+    headerActions.appendChild(newBtn);
+    headerActions.appendChild(closeBtn);
+    header.appendChild(headerInfo);
+    header.appendChild(headerActions);
 
-    document.body.insertAdjacentHTML('beforeend', chatWidget);
+    var context = document.createElement('div');
+    context.className = 'kbv-chat-context';
+    context.appendChild(icon('book'));
+    var contextText = document.createElement('span');
+    contextText.appendChild(document.createTextNode('Searching in '));
+    var contextName = document.createElement('strong');
+    contextName.textContent = kbName;
+    contextText.appendChild(contextName);
+    context.appendChild(contextText);
 
-    var chat = document.querySelector('[data-kbv-chat]');
-    var fab = document.querySelector('[data-kbv-chat-toggle]');
-    var closeBtn = document.querySelector('[data-kbv-chat-close]');
-    var newBtn = document.querySelector('[data-kbv-chat-new]');
-    var form = document.querySelector('[data-kbv-chat-form]');
-    var input = document.querySelector('[data-kbv-chat-input]');
-    var messages = document.querySelector('[data-kbv-chat-messages]');
-    var typing = document.querySelector('[data-kbv-chat-typing]');
-    var suggestions = document.querySelectorAll('[data-kbv-chat-suggestion]');
+    var messages = document.createElement('div');
+    messages.className = 'kbv-chat-messages';
 
-    if (!chat || !fab || !form) return;
+    var greeting = document.createElement('div');
+    greeting.className = 'kbv-chat-msg bot';
+    var greetAvatar = document.createElement('span');
+    greetAvatar.className = 'kbv-chat-msg-avatar';
+    greetAvatar.appendChild(icon('robot'));
+    var greetBubble = document.createElement('div');
+    greetBubble.className = 'kbv-chat-bubble';
+    var greetP = document.createElement('p');
+    greetP.textContent = "Hi! I'm your knowledge base assistant. Ask me anything about the documents in this base.";
+    greetBubble.appendChild(greetP);
+    var suggestions = document.createElement('div');
+    suggestions.className = 'kbv-chat-suggestions';
+    ['What\'s in this knowledge base?', 'Summarize the latest uploads', 'Find pricing information'].forEach(function (label) {
+        var chip = document.createElement('button');
+        chip.type = 'button';
+        chip.className = 'kbv-chat-suggestion';
+        chip.textContent = label;
+        suggestions.appendChild(chip);
+    });
+    greetBubble.appendChild(suggestions);
+    greeting.appendChild(greetAvatar);
+    greeting.appendChild(greetBubble);
+    messages.appendChild(greeting);
+
+    var typing = document.createElement('div');
+    typing.className = 'kbv-chat-typing';
+    typing.hidden = true;
+    typing.innerHTML = '<span></span><span></span><span></span>';
+
+    var form = document.createElement('form');
+    form.className = 'kbv-chat-composer';
+    var input = document.createElement('textarea');
+    input.className = 'kbv-chat-input';
+    input.placeholder = 'Ask a question...';
+    input.rows = 1;
+    input.maxLength = 1000;
+    input.autocomplete = 'off';
+    var sendBtn = document.createElement('button');
+    sendBtn.type = 'submit';
+    sendBtn.className = 'kbv-chat-send';
+    sendBtn.setAttribute('aria-label', 'Send');
+    sendBtn.appendChild(icon('send'));
+    form.appendChild(input);
+    form.appendChild(sendBtn);
+
+    chat.appendChild(header);
+    chat.appendChild(context);
+    chat.appendChild(messages);
+    chat.appendChild(form);
+    shadow.appendChild(fab);
+    shadow.appendChild(chat);
+    document.body.appendChild(host);
 
     var backdrop = null;
     var isSending = false;
 
-    // ---------------------------------------------------------
-    // Open / close
-    // ---------------------------------------------------------
     function openChat() {
         chat.hidden = false;
         fab.classList.add('is-open');
-
-        if (window.innerWidth <= 640) {
+        if (window.innerWidth <= 640 && !backdrop) {
             backdrop = document.createElement('div');
             backdrop.className = 'kbv-chat-backdrop';
             backdrop.addEventListener('click', closeChat);
-            document.body.appendChild(backdrop);
+            shadow.insertBefore(backdrop, chat);
         }
-
         setTimeout(function () { input.focus(); }, 50);
         scrollToBottom();
     }
@@ -126,27 +204,22 @@
     }
 
     fab.addEventListener('click', openChat);
-    if (closeBtn) closeBtn.addEventListener('click', closeChat);
+    closeBtn.addEventListener('click', closeChat);
 
-    if (newBtn) {
-        newBtn.addEventListener('click', function () {
-            // Clear messages except the first greeting
-            var msgs = messages.querySelectorAll('.kbv-chat-msg');
-            msgs.forEach(function (m, i) { if (i > 0) m.remove(); });
-            input.value = '';
-            input.focus();
+    newBtn.addEventListener('click', function () {
+        messages.querySelectorAll('.kbv-chat-msg').forEach(function (m, i) {
+            if (i > 0) m.remove();
         });
-    }
+        input.value = '';
+        input.style.height = 'auto';
+        input.focus();
+    });
 
-    // ---------------------------------------------------------
-    // Auto-resize textarea
-    // ---------------------------------------------------------
     input.addEventListener('input', function () {
         input.style.height = 'auto';
         input.style.height = Math.min(input.scrollHeight, 120) + 'px';
     });
 
-    // Enter to send, Shift+Enter for new line
     input.addEventListener('keydown', function (e) {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
@@ -154,32 +227,27 @@
         }
     });
 
-    // ---------------------------------------------------------
-    // Form submit
-    // ---------------------------------------------------------
     form.addEventListener('submit', function (e) {
         e.preventDefault();
         sendMessage();
     });
 
-    // ---------------------------------------------------------
-    // Suggestion chips
-    // ---------------------------------------------------------
-    suggestions.forEach(function (chip) {
-        chip.addEventListener('click', function () {
-            input.value = chip.textContent.trim();
-            sendMessage();
-        });
+    suggestions.addEventListener('click', function (e) {
+        var chip = e.target.closest('.kbv-chat-suggestion');
+        if (!chip) return;
+        input.value = chip.textContent.trim();
+        sendMessage();
     });
 
-    // ---------------------------------------------------------
-    // Send
-    // ---------------------------------------------------------
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && !chat.hidden) closeChat();
+    });
+
     function sendMessage() {
         if (isSending) return;
-
         var text = (input.value || '').trim();
         if (!text) return;
+        if (text.length > 1000) text = text.slice(0, 1000);
 
         appendUserMessage(text);
         input.value = '';
@@ -187,71 +255,51 @@
         showTyping();
         isSending = true;
 
-        // ---- Optional: post to the server ----
-        // For now, we simulate a response. Swap this block for the fetch call below.
+        var payload = embedMode
+            ? { message: text }
+            : { knowledgeBaseId: document.querySelector('[data-kb-id]') && document.querySelector('[data-kb-id]').getAttribute('data-kb-id'), message: text };
 
-        // simulateBotResponse(text);
-
-        // To hit a real endpoint:
-        fetch(CHAT_ENDPOINT, {
+        fetch(endpoint, {
             method: 'POST',
+            credentials: embedMode ? 'omit' : 'same-origin',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                knowledgeBaseId: document.querySelector('[data-kb-id]')?.dataset.kbId,
-                message: text
-            })
+            body: JSON.stringify(payload)
         })
-            .then(function (r) { return r.json(); })
-            .then(function (data) {
+            .then(function (r) {
+                return r.json().catch(function () { return {}; }).then(function (data) {
+                    return { ok: r.ok, status: r.status, data: data || {} };
+                });
+            })
+            .then(function (res) {
                 hideTyping();
-                appendBotMessage(data.answer, data.citations || []);
+                if (res.status === 429) {
+                    appendBotMessage('Too many messages. Try again in a minute.');
+                } else if (res.status === 403) {
+                    appendBotMessage('This chat is not available on this website.');
+                } else if (!res.ok) {
+                    appendBotMessage(typeof res.data.error === 'string' ? res.data.error : 'Sorry, something went wrong. Please try again.');
+                } else {
+                    appendBotMessage(typeof res.data.answer === 'string' ? res.data.answer : 'Sorry, something went wrong. Please try again.', embedMode ? [] : (res.data.citations || []));
+                }
             })
             .catch(function () {
                 hideTyping();
-                appendBotMessage('Sorry, something went wrong. Please try again.');
+                appendBotMessage(embedMode
+                    ? 'This chat is not available on this website.'
+                    : 'Sorry, something went wrong. Please try again.');
             })
             .finally(function () { isSending = false; });
     }
 
-    // ---------------------------------------------------------
-    // Simulated response (remove when wiring the API)
-    // ---------------------------------------------------------
-    function simulateBotResponse(question) {
-        setTimeout(function () {
-            hideTyping();
-            var q = question.toLowerCase();
-
-            if (q.indexOf('pricing') !== -1) {
-                appendBotMessage(
-                    'I found a document about pricing. It outlines a three-tier model with annual discounts.',
-                    [{ name: 'pricing-strategy-2025.pdf', meta: '2.4 MB · uploaded 2h ago', type: 'pdf' }]
-                );
-            } else if (q.indexOf('summary') !== -1 || q.indexOf('summarize') !== -1) {
-                appendBotMessage(
-                    'This knowledge base currently contains 24 documents covering pricing, product overviews, and customer FAQs. The most recently updated file is pricing-strategy-2025.pdf.'
-                );
-            } else if (q.indexOf('what') !== -1) {
-                appendBotMessage(
-                    'This knowledge base contains 24 documents, organized around product documentation, pricing, and customer-facing material.'
-                );
-            } else {
-                appendBotMessage(
-                    'I searched across the documents in this base but couldn\'t find a strong match. Try rephrasing, or upload more documents.'
-                );
-            }
-
-            isSending = false;
-        }, 800 + Math.random() * 600);
-    }
-
-    // ---------------------------------------------------------
-    // Append helpers
-    // ---------------------------------------------------------
     function appendUserMessage(text) {
         var el = document.createElement('div');
         el.className = 'kbv-chat-msg user';
-        el.innerHTML = '<div class="kbv-chat-bubble"><p></p></div>';
-        el.querySelector('p').textContent = text;
+        var bubble = document.createElement('div');
+        bubble.className = 'kbv-chat-bubble';
+        var p = document.createElement('p');
+        p.textContent = text;
+        bubble.appendChild(p);
+        el.appendChild(bubble);
         messages.appendChild(el);
         scrollToBottom();
     }
@@ -259,65 +307,51 @@
     function appendBotMessage(text, citations) {
         var el = document.createElement('div');
         el.className = 'kbv-chat-msg bot';
+        var msgAvatar = document.createElement('span');
+        msgAvatar.className = 'kbv-chat-msg-avatar';
+        msgAvatar.appendChild(icon('robot'));
 
         var bubble = document.createElement('div');
         bubble.className = 'kbv-chat-bubble';
-
         var p = document.createElement('p');
-        p.textContent = text;
+        p.textContent = text || '';
         bubble.appendChild(p);
 
-        if (citations && citations.length) {
+        if (!embedMode && citations && citations.length) {
             citations.forEach(function (c) {
+                if (!c || typeof c.name !== 'string') return;
                 var card = document.createElement('div');
                 card.className = 'kbv-chat-citation';
-
-                var iconClass = 'fa-file';
-                if (c.type === 'pdf') iconClass = 'fa-file-pdf';
-                else if (c.type === 'docx') iconClass = 'fa-file-word';
-                else if (c.type === 'xlsx') iconClass = 'fa-file-excel';
-
-                card.innerHTML =
-                    '<i class="fas ' + iconClass + '"></i>' +
-                    '<div><strong></strong><small></small></div>';
-                card.querySelector('strong').textContent = c.name;
-                card.querySelector('small').textContent = c.meta || '';
-
+                card.appendChild(icon('file'));
+                var info = document.createElement('div');
+                var strong = document.createElement('strong');
+                strong.textContent = c.name;
+                var small = document.createElement('small');
+                small.textContent = typeof c.meta === 'string' ? c.meta : '';
+                info.appendChild(strong);
+                info.appendChild(small);
+                card.appendChild(info);
                 bubble.appendChild(card);
             });
         }
 
-        var avatar = document.createElement('span');
-        avatar.className = 'kbv-chat-msg-avatar';
-        avatar.innerHTML = '<i class="fas fa-robot"></i>';
-
-        el.appendChild(avatar);
+        el.appendChild(msgAvatar);
         el.appendChild(bubble);
         messages.appendChild(el);
         scrollToBottom();
     }
 
     function showTyping() {
-        if (typing) {
-            typing.hidden = false;
-            messages.appendChild(typing);
-            scrollToBottom();
-        }
+        typing.hidden = false;
+        messages.appendChild(typing);
+        scrollToBottom();
     }
 
     function hideTyping() {
-        if (typing) typing.hidden = true;
+        typing.hidden = true;
     }
 
     function scrollToBottom() {
         messages.scrollTop = messages.scrollHeight;
     }
-
-    // ---------------------------------------------------------
-    // Escape key closes the chat
-    // ---------------------------------------------------------
-    document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape' && !chat.hidden) closeChat();
-    });
-
 })();

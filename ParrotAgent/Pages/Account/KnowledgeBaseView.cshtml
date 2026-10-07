@@ -10,7 +10,7 @@
 }
 
 <!-- Hidden: knowledge base id used by the uploader -->
-<div data-kb-id="@Model.UserKnowledgeBase.Id" hidden></div>
+<div data-kb-id="@Model.UserKnowledgeBase.Id" data-kb-name="@Model.UserKnowledgeBase.Name" hidden></div>
 
 <!-- ============ Breadcrumb + KB header ============ -->
 <header class="kbv-header">
@@ -40,6 +40,9 @@
         </div>
 
         <div class="kbv-header-actions">
+            <button type="button" class="pa-btn pa-btn-outline" data-kbv-embed-open>
+                <i class="fas fa-code"></i> Create embed snippet
+            </button>
             <button type="button" class="pa-btn pa-btn-outline">
                 <i class="fas fa-share-alt"></i> Share
             </button>
@@ -251,9 +254,116 @@
     </li>
 </template>
 
+<div class="kbv-embed-modal" id="kbv-embed-modal" hidden>
+    <div class="kbv-embed-backdrop" data-kbv-embed-close></div>
+    <div class="kbv-embed-dialog" role="dialog" aria-modal="true" aria-labelledby="kbv-embed-title">
+        <header class="kbv-embed-header">
+            <div>
+                <h2 id="kbv-embed-title">Create embed snippet</h2>
+                <p>Add a chat widget to your website. Visitors can ask about this knowledge base.</p>
+            </div>
+            <button type="button" class="kbv-embed-close" data-kbv-embed-close aria-label="Close">
+                <i class="fas fa-times"></i>
+            </button>
+        </header>
+
+        <form method="post" asp-page-handler="SaveEmbed" asp-route-id="@Model.UserKnowledgeBase.Id" class="kbv-embed-form">
+            @if (!string.IsNullOrEmpty(Model.EmbedError))
+            {
+                <p class="kbv-embed-error">@Model.EmbedError</p>
+            }
+            else if (Model.EmbedSaved)
+            {
+                <p class="kbv-embed-success">Snippet saved. Copy it into your website.</p>
+            }
+
+            <label class="kbv-embed-label" for="EmbedAllowedOrigins">Allowed websites</label>
+            <textarea asp-for="EmbedAllowedOrigins" id="EmbedAllowedOrigins" class="kbv-embed-origins" rows="4"
+                      placeholder="https://example.com&#10;https://docs.example.com&#10;http://localhost:3000"></textarea>
+            <p class="kbv-embed-hint">One site per line. Use the origin only, such as https://example.com. Public sites must use https.</p>
+
+            <label class="kbv-embed-enable">
+                <input asp-for="EmbedEnabled" />
+                <span>Turn the widget on for these websites</span>
+            </label>
+
+            <label class="kbv-embed-label" for="kbv-embed-snippet">Snippet</label>
+            @if (string.IsNullOrEmpty(Model.EmbedSnippet))
+            {
+                <textarea id="kbv-embed-snippet" class="kbv-embed-snippet" rows="4" readonly placeholder="Save to generate a snippet."></textarea>
+            }
+            else
+            {
+                <textarea id="kbv-embed-snippet" class="kbv-embed-snippet" rows="4" readonly>@Model.EmbedSnippet</textarea>
+            }
+            <p class="kbv-embed-hint">The token in this snippet is public. Only the websites listed above can use it. Regenerating the token stops older snippets from working.</p>
+
+            <div class="kbv-embed-actions">
+                <button type="button" class="pa-btn pa-btn-outline" id="kbv-embed-copy" @(string.IsNullOrEmpty(Model.EmbedSnippet) ? "disabled" : null)>Copy snippet</button>
+                @if (Model.EmbedSettings != null)
+                {
+                    <button type="submit" class="pa-btn pa-btn-outline" name="regenerate" value="true">Regenerate token</button>
+                }
+                <button type="submit" class="pa-btn pa-btn-primary">Save snippet</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js"></script>
     <script src="~/js/kb-view.js" asp-append-version="true"></script>
     <script src="~/js/kb-uploader.js" asp-append-version="true"></script>
     <script src="~/js/kb-chat.js" asp-append-version="true"></script>
+    <script>
+        (function () {
+            var modal = document.getElementById('kbv-embed-modal');
+            var openBtn = document.querySelector('[data-kbv-embed-open]');
+            var copyBtn = document.getElementById('kbv-embed-copy');
+            var snippet = document.getElementById('kbv-embed-snippet');
+            if (!modal || !openBtn) return;
+
+            function openModal() {
+                modal.hidden = false;
+                document.body.classList.add('kbv-embed-open');
+            }
+
+            function closeModal() {
+                modal.hidden = true;
+                document.body.classList.remove('kbv-embed-open');
+            }
+
+            openBtn.addEventListener('click', openModal);
+            modal.querySelectorAll('[data-kbv-embed-close]').forEach(function (el) {
+                el.addEventListener('click', closeModal);
+            });
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && !modal.hidden) closeModal();
+            });
+
+            if (copyBtn && snippet) {
+                copyBtn.addEventListener('click', function () {
+                    var text = snippet.value;
+                    if (!text) return;
+                    var done = function () {
+                        copyBtn.textContent = 'Copied';
+                        setTimeout(function () { copyBtn.textContent = 'Copy snippet'; }, 1600);
+                    };
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(text).then(done).catch(function () {
+                            snippet.focus();
+                            snippet.select();
+                        });
+                    } else {
+                        snippet.focus();
+                        snippet.select();
+                        document.execCommand('copy');
+                        done();
+                    }
+                });
+            }
+
+            if (@(Model.ShowEmbedModal ? "true" : "false")) openModal();
+        })();
+    </script>
 }

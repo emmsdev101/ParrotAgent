@@ -28,6 +28,7 @@ namespace ParrotAgent.Database
         public DbSet<DocumentChunk> DocumentChunks { get; set; }
         public DbSet<Organization> Organizations { get; set; }
         public DbSet<Role> Roles { get; set; }
+        public DbSet<KnowledgeBaseEmbed> KnowledgeBaseEmbeds { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -88,6 +89,18 @@ namespace ParrotAgent.Database
                 .WithMany()
                 .HasForeignKey(c => c.RoleId)
                 .OnDelete(DeleteBehavior.NoAction);
+            });
+
+            modelBuilder.Entity<KnowledgeBaseEmbed>(entity =>
+            {
+                entity.HasIndex(e => e.Token).IsUnique();
+                entity.HasIndex(e => e.KnowledgeBaseId).IsUnique();
+                entity.Property(e => e.Token).HasMaxLength(80);
+                entity.Property(e => e.AllowedOrigins).HasMaxLength(4000);
+                entity.HasOne(e => e.KnowledgeBase)
+                    .WithMany()
+                    .HasForeignKey(e => e.KnowledgeBaseId)
+                    .OnDelete(DeleteBehavior.NoAction);
             });
         }
     }
