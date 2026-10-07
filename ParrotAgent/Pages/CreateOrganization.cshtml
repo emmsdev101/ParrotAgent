@@ -1,0 +1,304 @@
+@page "/CreateOrganization"
+@model ParrotAgent.Pages.CreateOrganizationModel
+@{
+    ViewData["Title"] = "Create your organization";
+    var existing = Model.ExistingOrganization;
+    var showForm = existing == null || Model.OrganizationForm.CreateNewOrganization;
+    var previewName = string.IsNullOrWhiteSpace(Model.OrganizationForm.Name) ? "Your organization" : Model.OrganizationForm.Name;
+    var previewDomain = string.IsNullOrWhiteSpace(Model.OrganizationForm.Domain) ? "yourcompany.com" : Model.OrganizationForm.Domain;
+    var previewMark = previewName.Trim()[0].ToString().ToUpperInvariant();
+}
+
+<section class="org-section">
+    <div class="pa-container">
+        <div class="org-wrapper">
+
+            <aside class="org-aside">
+                <div class="org-aside-inner">
+                    <h2>Give your team a home for its knowledge.</h2>
+                    <p>
+                        An organization keeps knowledge bases, documents, and people
+                        under one company domain.
+                    </p>
+
+                    <ul class="org-features">
+                        <li>
+                            <span class="org-feature-icon"><i class="fas fa-building"></i></span>
+                            <div>
+                                <strong>One workspace</strong>
+                                <small>Everything your company creates lives in one place.</small>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="org-feature-icon purple"><i class="fas fa-globe"></i></span>
+                            <div>
+                                <strong>A unique domain</strong>
+                                <small>Your company domain identifies the organization.</small>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="org-feature-icon green"><i class="fas fa-user-plus"></i></span>
+                            <div>
+                                <strong>Invite the team later</strong>
+                                <small>Add teammates once the organization is ready.</small>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <div class="org-preview" id="org-preview">
+                        <span class="org-preview-mark" id="org-preview-mark">@previewMark</span>
+                        <div>
+                            <strong id="org-preview-name">@previewName</strong>
+                            <small id="org-preview-domain">@previewDomain</small>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <form method="post" class="org-form" id="org-form"
+                  data-existing-name="@existing?.Name"
+                  data-existing-domain="@existing?.Domain">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="OrganizationForm.OrganizationId" />
+                <div class="org-card">
+                    <ol class="org-steps" aria-label="Setup progress">
+                        <li class="is-done"><i class="fas fa-check"></i> Account</li>
+                        <li class="is-current" aria-current="step">Organization</li>
+                    </ol>
+
+                    <header class="org-header">
+                        @if (showForm)
+                        {
+                            <h1 id="org-title">Create your organization</h1>
+                            <p id="org-subtitle">This is the workspace your team will share.</p>
+                        }
+                        else
+                        {
+                            <h1 id="org-title">Join @existing!.Name</h1>
+                            <p id="org-subtitle">This organization already uses your email domain.</p>
+                        }
+                    </header>
+
+                    @if (existing != null)
+                    {
+                        <div class="org-existing">
+                            <span class="org-existing-mark">@existing.Name.Trim()[0].ToString().ToUpperInvariant()</span>
+                            <div>
+                                <span class="org-existing-label">Your organization</span>
+                                <strong>@existing.Name</strong>
+                                <small>@existing.Domain</small>
+                            </div>
+                        </div>
+
+                        <label class="org-switch">
+                            <input type="checkbox" asp-for="OrganizationForm.CreateNewOrganization" id="create-new-org" />
+                            <span class="org-switch-track" aria-hidden="true"></span>
+                            <span class="org-switch-label">Create new organization</span>
+                        </label>
+                    }
+
+                    <div class="org-create" id="org-create" hidden="@(!showForm)">
+                        <div class="org-field">
+                            <label asp-for="OrganizationForm.Name">Organization name</label>
+                            <div class="org-input-wrap">
+                                <i class="fas fa-building"></i>
+                                <input asp-for="OrganizationForm.Name"
+                                       placeholder="Acme Inc."
+                                       autocomplete="organization"
+                                       maxlength="80"
+                                       required="@showForm" />
+                            </div>
+                            <span asp-validation-for="OrganizationForm.Name" class="org-error"></span>
+                        </div>
+
+                        <div class="org-field">
+                            <label asp-for="OrganizationForm.Domain">Company domain</label>
+                            <div class="org-input-wrap">
+                                <i class="fas fa-globe"></i>
+                                <input asp-for="OrganizationForm.Domain"
+                                       placeholder="acme.com"
+                                       autocomplete="url"
+                                       inputmode="url"
+                                       maxlength="253"
+                                       spellcheck="false"
+                                       required="@showForm" />
+                            </div>
+                            <p class="org-status" id="domain-status" data-state="idle" aria-live="polite">
+                                <i class="fas fa-circle" aria-hidden="true"></i>
+                                <span>Use your company domain, like acme.com.</span>
+                            </p>
+                            <span asp-validation-for="OrganizationForm.Domain" class="org-error"></span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="org-submit" id="org-submit">
+                        <span id="org-submit-label">@(showForm ? "Create organization" : "Join organization")</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        (function () {
+            var form = document.getElementById('org-form');
+            var nameInput = document.getElementById('OrganizationForm_Name');
+            var domainInput = document.getElementById('OrganizationForm_Domain');
+            var status = document.getElementById('domain-status');
+            var statusText = status.querySelector('span');
+            var statusIcon = status.querySelector('i');
+            var previewName = document.getElementById('org-preview-name');
+            var previewDomain = document.getElementById('org-preview-domain');
+            var previewMark = document.getElementById('org-preview-mark');
+            var domainPattern = /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}$/;
+            var checkTimer = 0;
+            var requestId = 0;
+
+            function normalizeDomain(value) {
+                var domain = (value || '').trim().toLowerCase();
+                var at = domain.lastIndexOf('@@');
+                if (at >= 0) domain = domain.slice(at + 1);
+                domain = domain.replace(/^[a-z][a-z0-9+.-]*:\/\//, '');
+                domain = domain.split('/')[0].split('?')[0].split('#')[0].split(':')[0];
+                if (domain.indexOf('www.') === 0) domain = domain.slice(4);
+                return domain.replace(/^\.+|\.+$/g, '');
+            }
+
+            function setStatus(state, message, iconClass) {
+                status.setAttribute('data-state', state);
+                statusText.textContent = message;
+                statusIcon.className = iconClass;
+            }
+
+            function updatePreview() {
+                var name = nameInput.value.trim();
+                var domain = normalizeDomain(domainInput.value);
+                previewName.textContent = name || 'Your organization';
+                previewDomain.textContent = domain || 'yourcompany.com';
+                previewMark.textContent = (name || 'P').charAt(0).toUpperCase();
+            }
+
+            function checkDomain() {
+                var domain = normalizeDomain(domainInput.value);
+                window.clearTimeout(checkTimer);
+                domainInput.setCustomValidity('');
+
+                if (!domainInput.value.trim()) {
+                    setStatus('idle', 'Use your company domain, like acme.com.', 'fas fa-circle');
+                    return;
+                }
+
+                if (!domainPattern.test(domain)) {
+                    domainInput.setCustomValidity('Enter a valid domain, like acme.com.');
+                    setStatus('invalid', 'Enter a valid domain, like acme.com.', 'fas fa-exclamation-circle');
+                    return;
+                }
+
+                setStatus('checking', 'Checking ' + domain + '…', 'fas fa-spinner fa-spin');
+                var currentRequest = ++requestId;
+                checkTimer = window.setTimeout(function () {
+                    fetch('/api/organization/check-domain?domain=' + encodeURIComponent(domain), {
+                        headers: { 'Accept': 'application/json' }
+                    }).then(function (response) {
+                        if (currentRequest !== requestId) return null;
+                        if (response.status === 404) return { available: true };
+                        if (!response.ok) return { failed: true };
+                        return response.json().then(function (data) {
+                            return { taken: true, name: data && data.name ? data.name : domain };
+                        });
+                    }).then(function (result) {
+                        if (!result || currentRequest !== requestId) return;
+                        if (normalizeDomain(domainInput.value) !== domain) return;
+
+                        if (result.available) {
+                            domainInput.setCustomValidity('');
+                            setStatus('available', domain + ' is available.', 'fas fa-check');
+                            return;
+                        }
+
+                        if (result.taken) {
+                            domainInput.setCustomValidity('This domain is already used by ' + result.name + '.');
+                            setStatus('taken', result.name + ' already uses ' + domain + '.', 'fas fa-building');
+                            return;
+                        }
+
+                        domainInput.setCustomValidity('');
+                        setStatus('idle', 'We could not check that domain right now.', 'fas fa-circle');
+                    }).catch(function () {
+                        if (currentRequest !== requestId) return;
+                        domainInput.setCustomValidity('');
+                        setStatus('idle', 'We could not check that domain right now.', 'fas fa-circle');
+                    });
+                }, 400);
+            }
+
+            var createToggle = document.getElementById('create-new-org')
+                || document.querySelector('[name="OrganizationForm.CreateNewOrganization"]');
+            var createPanel = document.getElementById('org-create');
+            var title = document.getElementById('org-title');
+            var subtitle = document.getElementById('org-subtitle');
+            var submitLabel = document.getElementById('org-submit-label');
+            var existingName = form.getAttribute('data-existing-name') || '';
+            var existingDomain = form.getAttribute('data-existing-domain') || '';
+
+            function isCreating() {
+                return !createToggle || createToggle.checked;
+            }
+
+            function applyCreateMode() {
+                var creating = isCreating();
+                if (createPanel) createPanel.hidden = !creating;
+                nameInput.required = creating;
+                domainInput.required = creating;
+
+                if (!creating) {
+                    nameInput.setCustomValidity('');
+                    domainInput.setCustomValidity('');
+                    if (existingName) nameInput.value = existingName;
+                    if (existingDomain) domainInput.value = existingDomain;
+                }
+
+                if (title && subtitle && submitLabel && createToggle) {
+                    title.textContent = creating ? 'Create your organization' : ('Join ' + existingName);
+                    subtitle.textContent = creating
+                        ? 'This is the workspace your team will share.'
+                        : 'This organization already uses your email domain.';
+                    submitLabel.textContent = creating ? 'Create organization' : 'Join organization';
+                }
+
+                updatePreview();
+                if (creating && domainInput.value) checkDomain();
+            }
+
+            nameInput.addEventListener('input', updatePreview);
+            domainInput.addEventListener('input', function () {
+                updatePreview();
+                if (isCreating()) checkDomain();
+            });
+            domainInput.addEventListener('blur', function () {
+                var cleaned = normalizeDomain(domainInput.value);
+                if (cleaned && cleaned !== domainInput.value.trim()) {
+                    domainInput.value = cleaned;
+                    updatePreview();
+                    if (isCreating()) checkDomain();
+                }
+            });
+            if (createToggle) createToggle.addEventListener('change', applyCreateMode);
+            form.addEventListener('submit', function () {
+                if (!isCreating()) {
+                    nameInput.setCustomValidity('');
+                    domainInput.setCustomValidity('');
+                    return;
+                }
+                var cleaned = normalizeDomain(domainInput.value);
+                if (cleaned) domainInput.value = cleaned;
+            });
+
+            updatePreview();
+            if (isCreating() && domainInput.value) checkDomain();
+        })();
+    </script>
+}

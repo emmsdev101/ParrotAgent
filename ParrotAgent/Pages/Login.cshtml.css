@@ -307,8 +307,13 @@
     justify-content: center;
     width: 32px;
     height: 32px;
+    padding: 0;
+    border: none;
     border-radius: 8px;
+    background: transparent;
     color: #94a3b8;
+    cursor: pointer;
+    appearance: none;
     transition: color 0.15s ease, background 0.15s ease;
     z-index: 1;
 }
@@ -316,6 +321,15 @@
     .auth-toggle-pass:hover {
         color: #475569;
         background: #f1f5f9;
+    }
+
+    .auth-toggle-pass:focus {
+        outline: none;
+    }
+
+    .auth-toggle-pass:focus-visible {
+        outline: 2px solid #2563eb;
+        outline-offset: 2px;
     }
 
 /* Hint */

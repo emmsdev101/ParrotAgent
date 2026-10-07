@@ -32,7 +32,7 @@ namespace ParrotAgent.Pages
 
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == LoginUser.Email);
 
-            Console.WriteLine($"User: {user?.Username}, Password: {user?.Password}");
+            Console.WriteLine($"User: {user?.Email}, Password: {user?.Password}");
 
             var hashedPassword = BCrypt.Net.BCrypt.HashPassword(LoginUser.Password);
 

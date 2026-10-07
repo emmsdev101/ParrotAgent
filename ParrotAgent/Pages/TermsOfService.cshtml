@@ -1,0 +1,314 @@
+﻿@page "/Terms"
+@model ParrotAgent.Pages.TermsOfServiceModel;
+@{
+    ViewData["Title"] = "Terms of Service";
+    Layout = "_Layout";  // explicit — uses Pages/Shared/_Layout.cshtml
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/terms.css" asp-append-version="true" />
+}
+
+<!-- ============ Page header ============ -->
+<div class="terms-page">
+<header class="terms-header">
+    <div class="terms-header-inner">
+        <span class="terms-badge">
+            <i class="fas fa-shield-halved"></i> Legal
+        </span>
+        <h1 class="terms-title">Terms of Service</h1>
+        <p class="terms-subtitle">
+            These terms govern your use of ParrotAgent. Please read them carefully —
+            by using our service, you agree to be bound by them.
+        </p>
+
+        <div class="terms-meta">
+            <span class="terms-meta-item">
+                <i class="far fa-calendar"></i> Last updated: <strong>January 15, 2025</strong>
+            </span>
+            <span class="terms-meta-item">
+                <i class="fas fa-code-branch"></i> Version: <strong>2.1</strong>
+            </span>
+            <span class="terms-meta-item">
+                <i class="far fa-clock"></i> Reading time: <strong>~8 min</strong>
+            </span>
+        </div>
+    </div>
+</header>
+
+<!-- ============ Two-column: content + TOC ============ -->
+<div class="terms-layout">
+
+    <!-- ---------- Content ---------- -->
+    <article class="terms-content" data-terms-content>
+
+        <section id="acceptance" class="terms-section">
+            <h2><span class="terms-num">1.</span> Acceptance of Terms</h2>
+            <p>
+                Welcome to ParrotAgent ("we", "us", "our"). By accessing or using our website,
+                applications, and services (collectively, the "Service"), you agree to be bound
+                by these Terms of Service ("Terms").
+            </p>
+            <p>
+                If you are using the Service on behalf of an organization, you represent that
+                you have the authority to bind that organization to these Terms, and "you" will
+                refer to that organization.
+            </p>
+            <div class="terms-callout info">
+                <i class="fas fa-circle-info"></i>
+                <p>
+                    If you do not agree with any part of these Terms, you must not access or
+                    use the Service.
+                </p>
+            </div>
+        </section>
+
+        <section id="accounts" class="terms-section">
+            <h2><span class="terms-num">2.</span> Accounts and Registration</h2>
+            <p>
+                To use most features of the Service, you must create an account. When you
+                register, you agree to:
+            </p>
+            <ul>
+                <li>Provide accurate, current, and complete information.</li>
+                <li>Maintain and promptly update your account information.</li>
+                <li>Keep your password confidential and secure.</li>
+                <li>Accept responsibility for all activity that occurs under your account.</li>
+                <li>Notify us immediately of any unauthorized use of your account.</li>
+            </ul>
+            <p>
+                You must be at least 16 years old to create an account. If you are under 18,
+                you may only use the Service with the involvement of a parent or guardian.
+            </p>
+        </section>
+
+        <section id="service" class="terms-section">
+            <h2><span class="terms-num">3.</span> Use of the Service</h2>
+            <p>
+                ParrotAgent provides a knowledge base platform that allows you to create
+                knowledge bases, upload documents, and search across your content. You agree
+                to use the Service only for lawful purposes.
+            </p>
+
+            <h3>You agree <em>not</em> to:</h3>
+            <ul>
+                <li>Upload content that infringes intellectual property rights.</li>
+                <li>Upload malicious files, malware, or code designed to disrupt the Service.</li>
+                <li>Attempt to gain unauthorized access to other accounts or systems.</li>
+                <li>Use the Service to send spam or unsolicited communications.</li>
+                <li>Reverse engineer, decompile, or scrape the Service.</li>
+                <li>Resell, sublicense, or commercially exploit the Service without permission.</li>
+            </ul>
+
+            <div class="terms-callout warning">
+                <i class="fas fa-triangle-exclamation"></i>
+                <p>
+                    We may suspend or terminate your account if we detect abusive or illegal
+                    activity. You are responsible for any damages caused by misuse.
+                </p>
+            </div>
+        </section>
+
+        <section id="content" class="terms-section">
+            <h2><span class="terms-num">4.</span> Your Content</h2>
+            <p>
+                You retain ownership of any documents, text, images, or other materials you
+                upload to the Service ("Your Content").
+            </p>
+            <p>
+                By uploading Your Content, you grant us a worldwide, non-exclusive,
+                royalty-free license to host, store, reproduce, and process Your Content
+                solely to operate and improve the Service.
+            </p>
+            <p>
+                You represent and warrant that you own or have the necessary rights to Your
+                Content, and that it does not violate any third-party rights or applicable law.
+            </p>
+            <p>
+                You are solely responsible for the accuracy, quality, and legality of Your
+                Content. We do not review uploaded content and are not responsible for its
+                accuracy.
+            </p>
+        </section>
+
+        <section id="privacy" class="terms-section">
+            <h2><span class="terms-num">5.</span> Privacy and Data Protection</h2>
+            <p>
+                Your privacy matters to us. Our collection and use of personal information is
+                described in our <a href="/Privacy">Privacy Policy</a>, which is incorporated
+                into these Terms by reference.
+            </p>
+            <p>
+                We implement industry-standard security measures, including encryption in
+                transit and at rest, access controls, and regular security reviews. However,
+                no system is completely secure, and we cannot guarantee absolute security.
+            </p>
+        </section>
+
+        <section id="billing" class="terms-section">
+            <h2><span class="terms-num">6.</span> Subscriptions and Billing</h2>
+            <p>
+                Some features of the Service are offered on a paid subscription basis. By
+                subscribing, you agree to pay all applicable fees in the currency specified
+                at checkout.
+            </p>
+            <ul>
+                <li>Subscriptions renew automatically unless cancelled.</li>
+                <li>You may cancel at any time from your account settings.</li>
+                <li>Refunds are provided at our discretion, except where required by law.</li>
+                <li>We may change pricing with 30 days' notice.</li>
+            </ul>
+        </section>
+
+        <section id="ip" class="terms-section">
+            <h2><span class="terms-num">7.</span> Intellectual Property</h2>
+            <p>
+                The Service, including its design, code, logos, and documentation, is owned
+                by ParrotAgent and is protected by copyright, trademark, and other laws. These
+                Terms do not grant you any right to use our trademarks without prior written
+                consent.
+            </p>
+            <p>
+                If you provide feedback, suggestions, or ideas about the Service, you grant
+                us a perpetual, royalty-free license to use them without compensation.
+            </p>
+        </section>
+
+        <section id="termination" class="terms-section">
+            <h2><span class="terms-num">8.</span> Termination</h2>
+            <p>
+                You may stop using the Service at any time and delete your account from your
+                account settings. We may suspend or terminate your access if:
+            </p>
+            <ul>
+                <li>You violate these Terms.</li>
+                <li>We are required to do so by law.</li>
+                <li>We discontinue the Service (with reasonable notice).</li>
+            </ul>
+            <p>
+                Upon termination, your right to use the Service ends immediately. Provisions
+                that by their nature should survive termination — including ownership,
+                disclaimers, and limitation of liability — will continue to apply.
+            </p>
+        </section>
+
+        <section id="warranty" class="terms-section">
+            <h2><span class="terms-num">9.</span> Disclaimer of Warranties</h2>
+            <p class="terms-caps">
+                The Service is provided "AS IS" and "AS AVAILABLE" without warranties of any
+                kind, whether express or implied. We disclaim all warranties, including
+                merchantability, fitness for a particular purpose, and non-infringement.
+            </p>
+            <p>
+                We do not warrant that the Service will be uninterrupted, error-free, or free
+                of harmful components, or that any content will be accurate or reliable.
+            </p>
+        </section>
+
+        <section id="liability" class="terms-section">
+            <h2><span class="terms-num">10.</span> Limitation of Liability</h2>
+            <p class="terms-caps">
+                To the maximum extent permitted by law, ParrotAgent and its affiliates will
+                not be liable for any indirect, incidental, special, consequential, or
+                punitive damages, or any loss of profits, data, or goodwill, arising out of
+                or relating to your use of the Service.
+            </p>
+            <p>
+                Our total liability for any claim arising from these Terms or the Service
+                will not exceed the greater of (a) the amount you paid us in the 12 months
+                preceding the claim, or (b) USD $100.
+            </p>
+        </section>
+
+        <section id="changes" class="terms-section">
+            <h2><span class="terms-num">11.</span> Changes to These Terms</h2>
+            <p>
+                We may update these Terms from time to time. When we do, we will revise the
+                "Last updated" date at the top of this page and, for material changes, notify
+                you by email or in-app notification at least 14 days in advance.
+            </p>
+            <p>
+                Your continued use of the Service after the changes take effect constitutes
+                acceptance of the revised Terms.
+            </p>
+        </section>
+
+        <section id="law" class="terms-section">
+            <h2><span class="terms-num">12.</span> Governing Law</h2>
+            <p>
+                These Terms are governed by the laws of the State of Delaware, United States,
+                without regard to its conflict of law principles. Any disputes will be
+                resolved in the state or federal courts located in Delaware.
+            </p>
+        </section>
+
+        <section id="contact" class="terms-section">
+            <h2><span class="terms-num">13.</span> Contact Us</h2>
+            <p>
+                If you have questions about these Terms, please reach out:
+            </p>
+            <div class="terms-contact">
+                <div class="terms-contact-item">
+                    <span class="terms-contact-icon"><i class="fas fa-envelope"></i></span>
+                    <div>
+                        <strong>Email</strong>
+                        <a href="mailto:legal@parrotagent.com">legal@parrotagent.com</a>
+                    </div>
+                </div>
+                <div class="terms-contact-item">
+                    <span class="terms-contact-icon"><i class="fas fa-map-marker-alt"></i></span>
+                    <div>
+                        <strong>Mailing address</strong>
+                        <span>ParrotAgent, Inc. · 123 Market St · Wilmington, DE 19801</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="terms-footnote">
+            <p>
+                <i class="fas fa-circle-check"></i>
+                By using ParrotAgent, you acknowledge that you have read, understood, and
+                agree to be bound by these Terms of Service.
+            </p>
+        </footer>
+
+    </article>
+
+    <!-- ---------- Table of contents ---------- -->
+    <aside class="terms-toc" aria-label="Table of contents">
+        <div class="terms-toc-inner">
+            <h3 class="terms-toc-title">On this page</h3>
+            <nav class="terms-toc-nav" data-terms-toc>
+                <a href="#acceptance" class="active">Acceptance of Terms</a>
+                <a href="#accounts">Accounts and Registration</a>
+                <a href="#service">Use of the Service</a>
+                <a href="#content">Your Content</a>
+                <a href="#privacy">Privacy and Data Protection</a>
+                <a href="#billing">Subscriptions and Billing</a>
+                <a href="#ip">Intellectual Property</a>
+                <a href="#termination">Termination</a>
+                <a href="#warranty">Disclaimer of Warranties</a>
+                <a href="#liability">Limitation of Liability</a>
+                <a href="#changes">Changes to These Terms</a>
+                <a href="#law">Governing Law</a>
+                <a href="#contact">Contact Us</a>
+            </nav>
+
+            <div class="terms-toc-actions">
+                <button type="button" class="pa-btn pa-btn-outline" data-terms-print>
+                    <i class="fas fa-print"></i> Print
+                </button>
+                <button type="button" class="pa-btn pa-btn-outline" data-terms-copy>
+                    <i class="fas fa-link"></i> Copy link
+                </button>
+            </div>
+        </div>
+    </aside>
+
+</div>
+</div>
+
+@section Scripts {
+    <script src="~/js/terms.js" asp-append-version="true"></script>
+}

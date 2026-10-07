@@ -31,7 +31,7 @@ namespace ParrotAgent.Services
             {
                 if (string.IsNullOrWhiteSpace(Email)) return "Guest";
                 var user = _httpContextAccessor.HttpContext?.RequestServices.GetService<AppDbContext>()?.Users.FirstOrDefault(u => u.Email == Email);
-                return user?.Name ?? "Guest";
+                return user?.FirstName + " " + user?.LastName ?? "Guest";
             }
         }
 

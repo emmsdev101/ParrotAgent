@@ -90,6 +90,7 @@ namespace ParrotAgent.Api
                     Status = "Uploaded",
                     KnowledgeBaseId = knowledgeBaseId,
                     UserId = int.Parse(userId),
+                    OrganizationId = 0,
                     CreatedAt = DateTime.UtcNow
                 };
 

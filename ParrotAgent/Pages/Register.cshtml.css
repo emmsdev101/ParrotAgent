@@ -210,6 +210,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    gap: 10px;
 }
 
 .auth-header {
@@ -306,8 +307,13 @@
     justify-content: center;
     width: 32px;
     height: 32px;
+    padding: 0;
+    border: none;
     border-radius: 8px;
+    background: transparent;
     color: #94a3b8;
+    cursor: pointer;
+    appearance: none;
     transition: color 0.15s ease, background 0.15s ease;
     z-index: 1;
 }
@@ -315,6 +321,15 @@
     .auth-toggle-pass:hover {
         color: #475569;
         background: #f1f5f9;
+    }
+
+    .auth-toggle-pass:focus {
+        outline: none;
+    }
+
+    .auth-toggle-pass:focus-visible {
+        outline: 2px solid #2563eb;
+        outline-offset: 2px;
     }
 
 /* Hint */
@@ -333,17 +348,83 @@
     overflow: hidden;
 }
 
-    .auth-hint-bar i {
-        display: block;
-        height: 100%;
-        width: 40%;
-        background: linear-gradient(90deg, #ef4444, #f59e0b);
-        border-radius: inherit;
-    }
+.auth-hint-bar i {
+    display: block;
+    height: 100%;
+    width: 0;
+    background: #e2e8f0;
+    border-radius: inherit;
+    transition: width 0.2s ease, background 0.2s ease;
+}
+
+.auth-hint[data-level="weak"] .auth-hint-bar i {
+    width: 33%;
+    background: #ef4444;
+}
+
+.auth-hint[data-level="fair"] .auth-hint-bar i {
+    width: 66%;
+    background: #f59e0b;
+}
+
+.auth-hint[data-level="strong"] .auth-hint-bar i {
+    width: 100%;
+    background: #16a34a;
+}
+
+.auth-hint[data-level="weak"] .auth-hint-text {
+    color: #ef4444;
+}
+
+.auth-hint[data-level="fair"] .auth-hint-text {
+    color: #b45309;
+}
+
+.auth-hint[data-level="strong"] .auth-hint-text {
+    color: #16a34a;
+}
 
 .auth-hint-text {
     font-size: 0.76rem;
     color: #94a3b8;
+}
+
+.auth-password-rules {
+    list-style: none;
+    margin: 2px 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.auth-password-rules li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.76rem;
+    color: #94a3b8;
+}
+
+.auth-password-rules li i {
+    width: 12px;
+    font-size: 0.55rem;
+    text-align: center;
+}
+
+.auth-password-rules li.is-met {
+    color: #16a34a;
+}
+
+.auth-password-rules li.is-unmet {
+    color: #ef4444;
+}
+
+.auth-field .text-danger,
+.auth-field .field-validation-error {
+    display: block;
+    font-size: 0.76rem;
+    color: #ef4444;
 }
 
 /* Checkbox */

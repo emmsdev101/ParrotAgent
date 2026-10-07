@@ -1,8 +1,357 @@
-﻿@page
-@model PrivacyModel
+﻿@page "/Privacy"
+@model ParrotAgent.Pages.PrivacyModel
 @{
     ViewData["Title"] = "Privacy Policy";
+    Layout = "_Layout";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+@section Styles {
+    <link rel="stylesheet" href="~/css/terms.css" asp-append-version="true" />
+}
+
+<div class="terms-page">
+
+    <!-- ============ Page header ============ -->
+    <header class="terms-header">
+        <div class="terms-header-inner">
+            <span class="terms-badge">
+                <i class="fas fa-user-shield"></i> Privacy
+            </span>
+            <h1 class="terms-title">Privacy Policy</h1>
+            <p class="terms-subtitle">
+                Your privacy matters to us. This policy explains what data we collect,
+                how we use it, and the choices you have.
+            </p>
+
+            <div class="terms-meta">
+                <span class="terms-meta-item">
+                    <i class="far fa-calendar"></i> Last updated: <strong>January 15, 2025</strong>
+                </span>
+                <span class="terms-meta-item">
+                    <i class="fas fa-code-branch"></i> Version: <strong>2.0</strong>
+                </span>
+                <span class="terms-meta-item">
+                    <i class="far fa-clock"></i> Reading time: <strong>~7 min</strong>
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- ============ Two-column: content + TOC ============ -->
+    <div class="terms-layout">
+
+        <!-- ---------- Content ---------- -->
+        <article class="terms-content" data-terms-content>
+
+            <section id="overview" class="terms-section">
+                <h2><span class="terms-num">1.</span> Overview</h2>
+                <p>
+                    ParrotAgent ("we", "us", "our") is committed to protecting your privacy.
+                    This Privacy Policy describes how we collect, use, share, and safeguard
+                    your information when you use our knowledge base platform and related
+                    services (the "Service").
+                </p>
+                <p>
+                    By using the Service, you consent to the practices described in this
+                    policy. If you do not agree, please do not use the Service.
+                </p>
+                <div class="terms-callout info">
+                    <i class="fas fa-circle-info"></i>
+                    <p>
+                        This policy applies to all users of ParrotAgent, including visitors
+                        to our website, registered users, and enterprise customers.
+                    </p>
+                </div>
+            </section>
+
+            <section id="collect" class="terms-section">
+                <h2><span class="terms-num">2.</span> Information We Collect</h2>
+                <p>We collect information in three main ways:</p>
+
+                <h3>Information you provide</h3>
+                <ul>
+                    <li>Account details — name, email address, password.</li>
+                    <li>Payment information — processed securely by our payment provider.</li>
+                    <li>Content you upload — documents, files, and notes added to your knowledge bases.</li>
+                    <li>Communications — messages you send to our support team.</li>
+                </ul>
+
+                <h3>Information collected automatically</h3>
+                <ul>
+                    <li>Device information — browser type, operating system, device identifiers.</li>
+                    <li>Usage data — pages visited, features used, actions taken, timestamps.</li>
+                    <li>Log data — IP address, referring URLs, error reports.</li>
+                    <li>Cookies and similar technologies.</li>
+                </ul>
+
+                <h3>Information from third parties</h3>
+                <ul>
+                    <li>Identity providers if you sign in via Google, GitHub, or SSO.</li>
+                    <li>Payment processors to confirm successful transactions.</li>
+                    <li>Analytics providers that help us understand product usage.</li>
+                </ul>
+            </section>
+
+            <section id="use" class="terms-section">
+                <h2><span class="terms-num">3.</span> How We Use Your Information</h2>
+                <p>We use the information we collect to:</p>
+                <ul>
+                    <li>Provide, operate, and maintain the Service.</li>
+                    <li>Create and manage your account.</li>
+                    <li>Process payments and prevent fraud.</li>
+                    <li>Improve, personalize, and expand the Service.</li>
+                    <li>Communicate with you — service updates, security alerts, support replies.</li>
+                    <li>Send marketing communications (only if you opt in; you can unsubscribe at any time).</li>
+                    <li>Comply with legal obligations.</li>
+                </ul>
+                <p>
+                    We do not sell your personal information to third parties, and we do not
+                    use your uploaded documents to train machine learning models without your
+                    explicit consent.
+                </p>
+            </section>
+
+            <section id="legal-basis" class="terms-section">
+                <h2><span class="terms-num">4.</span> Legal Basis for Processing (GDPR)</h2>
+                <p>
+                    If you are located in the European Economic Area (EEA), the United Kingdom,
+                    or Switzerland, we process your personal data under the following legal
+                    bases:
+                </p>
+                <ul>
+                    <li><strong>Contract</strong> — to provide the Service you signed up for.</li>
+                    <li><strong>Legitimate interests</strong> — to improve the Service and prevent abuse.</li>
+                    <li><strong>Consent</strong> — for marketing and optional cookies.</li>
+                    <li><strong>Legal obligation</strong> — to comply with applicable laws.</li>
+                </ul>
+            </section>
+
+            <section id="cookies" class="terms-section">
+                <h2><span class="terms-num">5.</span> Cookies and Tracking</h2>
+                <p>
+                    We use cookies and similar tracking technologies to keep you signed in,
+                    remember your preferences, and analyze how the Service is used.
+                </p>
+                <h3>Types of cookies we use</h3>
+                <ul>
+                    <li><strong>Essential cookies</strong> — required for authentication and security.</li>
+                    <li><strong>Preference cookies</strong> — remember your settings and language.</li>
+                    <li><strong>Analytics cookies</strong> — help us understand usage patterns.</li>
+                    <li><strong>Marketing cookies</strong> — only set with your consent.</li>
+                </ul>
+                <p>
+                    You can manage cookie preferences in your browser settings or via our
+                    cookie banner. Disabling essential cookies may affect the Service.
+                </p>
+            </section>
+
+            <section id="share" class="terms-section">
+                <h2><span class="terms-num">6.</span> How We Share Information</h2>
+                <p>
+                    We do not sell your personal information. We may share it in the
+                    following limited circumstances:
+                </p>
+                <ul>
+                    <li><strong>Service providers</strong> — hosting, payments, analytics, email delivery. These vendors are bound by contracts requiring confidentiality.</li>
+                    <li><strong>Team members</strong> — content in your knowledge bases is visible to members of your workspace as configured by you.</li>
+                    <li><strong>Legal requirements</strong> — when required by law, subpoena, or court order.</li>
+                    <li><strong>Business transfers</strong> — in connection with a merger, acquisition, or sale of assets, with notice to you.</li>
+                    <li><strong>With your consent</strong> — for any other purpose you explicitly approve.</li>
+                </ul>
+            </section>
+
+            <section id="retention" class="terms-section">
+                <h2><span class="terms-num">7.</span> Data Retention</h2>
+                <p>
+                    We retain your personal information only as long as necessary to provide
+                    the Service and comply with legal obligations. When you delete your
+                    account, we remove or anonymize your personal data within 30 days, except
+                    where we are legally required to retain it longer.
+                </p>
+                <p>
+                    Backups are retained for up to 90 days and are securely deleted after that
+                    period.
+                </p>
+            </section>
+
+            <section id="security" class="terms-section">
+                <h2><span class="terms-num">8.</span> Security</h2>
+                <p>
+                    We implement industry-standard security measures to protect your data:
+                </p>
+                <ul>
+                    <li>Encryption in transit (TLS 1.2+) and at rest (AES-256).</li>
+                    <li>Role-based access controls and least-privilege principles.</li>
+                    <li>Regular security assessments and penetration testing.</li>
+                    <li>Incident response procedures and breach notification.</li>
+                    <li>Employee training and background checks.</li>
+                </ul>
+                <div class="terms-callout warning">
+                    <i class="fas fa-triangle-exclamation"></i>
+                    <p>
+                        No method of transmission over the internet is 100% secure. While we
+                        strive to protect your data, we cannot guarantee absolute security.
+                    </p>
+                </div>
+            </section>
+
+            <section id="rights" class="terms-section">
+                <h2><span class="terms-num">9.</span> Your Rights</h2>
+                <p>
+                    Depending on your location, you may have the following rights regarding
+                    your personal information:
+                </p>
+                <ul>
+                    <li><strong>Access</strong> — request a copy of the data we hold about you.</li>
+                    <li><strong>Correction</strong> — request that we correct inaccurate data.</li>
+                    <li><strong>Deletion</strong> — request that we delete your personal data.</li>
+                    <li><strong>Portability</strong> — receive your data in a machine-readable format.</li>
+                    <li><strong>Restriction</strong> — ask us to limit how we process your data.</li>
+                    <li><strong>Objection</strong> — object to processing based on legitimate interests.</li>
+                    <li><strong>Withdraw consent</strong> — opt out of marketing at any time.</li>
+                </ul>
+                <p>
+                    To exercise any of these rights, email us at
+                    <a href="mailto:privacy@parrotagent.com">privacy@parrotagent.com</a>.
+                    We will respond within 30 days.
+                </p>
+            </section>
+
+            <section id="ccpa" class="terms-section">
+                <h2><span class="terms-num">10.</span> California Privacy Rights (CCPA)</h2>
+                <p>
+                    If you are a California resident, you have additional rights under the
+                    California Consumer Privacy Act (CCPA):
+                </p>
+                <ul>
+                    <li>Right to know what personal information we collect and how it's used.</li>
+                    <li>Right to delete personal information we have collected.</li>
+                    <li>Right to opt out of the "sale" of personal information — we do not sell personal information.</li>
+                    <li>Right to non-discrimination for exercising your privacy rights.</li>
+                </ul>
+                <p>
+                    To make a CCPA request, email
+                    <a href="mailto:privacy@parrotagent.com">privacy@parrotagent.com</a>.
+                </p>
+            </section>
+
+            <section id="children" class="terms-section">
+                <h2><span class="terms-num">11.</span> Children's Privacy</h2>
+                <p>
+                    The Service is not intended for children under 16. We do not knowingly
+                    collect personal information from children. If we learn that we have
+                    collected data from a child under 16, we will delete it promptly.
+                </p>
+                <p>
+                    If you believe a child has provided us with personal information, please
+                    contact us at
+                    <a href="mailto:privacy@parrotagent.com">privacy@parrotagent.com</a>.
+                </p>
+            </section>
+
+            <section id="international" class="terms-section">
+                <h2><span class="terms-num">12.</span> International Data Transfers</h2>
+                <p>
+                    ParrotAgent is based in the United States. If you access the Service from
+                    outside the US, your data may be transferred to, stored, and processed in
+                    the US and other countries where our service providers operate.
+                </p>
+                <p>
+                    For transfers from the EEA, UK, and Switzerland, we rely on Standard
+                    Contractual Clauses approved by the European Commission.
+                </p>
+            </section>
+
+            <section id="changes" class="terms-section">
+                <h2><span class="terms-num">13.</span> Changes to This Policy</h2>
+                <p>
+                    We may update this Privacy Policy from time to time. When we make material
+                    changes, we will notify you by email or in-app notification at least 14
+                    days before the changes take effect.
+                </p>
+                <p>
+                    Your continued use of the Service after the effective date constitutes
+                    acceptance of the revised policy.
+                </p>
+            </section>
+
+            <section id="contact" class="terms-section">
+                <h2><span class="terms-num">14.</span> Contact Us</h2>
+                <p>
+                    If you have questions about this Privacy Policy or how we handle your data,
+                    please reach out:
+                </p>
+                <div class="terms-contact">
+                    <div class="terms-contact-item">
+                        <span class="terms-contact-icon"><i class="fas fa-envelope"></i></span>
+                        <div>
+                            <strong>Privacy team</strong>
+                            <a href="mailto:privacy@parrotagent.com">privacy@parrotagent.com</a>
+                        </div>
+                    </div>
+                    <div class="terms-contact-item">
+                        <span class="terms-contact-icon"><i class="fas fa-user-shield"></i></span>
+                        <div>
+                            <strong>Data Protection Officer</strong>
+                            <a href="mailto:dpo@parrotagent.com">dpo@parrotagent.com</a>
+                        </div>
+                    </div>
+                    <div class="terms-contact-item">
+                        <span class="terms-contact-icon"><i class="fas fa-map-marker-alt"></i></span>
+                        <div>
+                            <strong>Mailing address</strong>
+                            <span>ParrotAgent, Inc. · 123 Market St · Wilmington, DE 19801</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <footer class="terms-footnote">
+                <p>
+                    <i class="fas fa-circle-check"></i>
+                    By using ParrotAgent, you acknowledge that you have read and understood
+                    this Privacy Policy.
+                </p>
+            </footer>
+
+        </article>
+
+        <!-- ---------- Table of contents ---------- -->
+        <aside class="terms-toc" aria-label="Table of contents">
+            <div class="terms-toc-inner">
+                <h3 class="terms-toc-title">On this page</h3>
+                <nav class="terms-toc-nav" data-terms-toc>
+                    <a href="#overview" class="active">Overview</a>
+                    <a href="#collect">Information We Collect</a>
+                    <a href="#use">How We Use Your Information</a>
+                    <a href="#legal-basis">Legal Basis for Processing</a>
+                    <a href="#cookies">Cookies and Tracking</a>
+                    <a href="#share">How We Share Information</a>
+                    <a href="#retention">Data Retention</a>
+                    <a href="#security">Security</a>
+                    <a href="#rights">Your Rights</a>
+                    <a href="#ccpa">California Privacy Rights</a>
+                    <a href="#children">Children's Privacy</a>
+                    <a href="#international">International Data Transfers</a>
+                    <a href="#changes">Changes to This Policy</a>
+                    <a href="#contact">Contact Us</a>
+                </nav>
+
+                <div class="terms-toc-actions">
+                    <button type="button" class="pa-btn pa-btn-outline" data-terms-print>
+                        <i class="fas fa-print"></i> Print
+                    </button>
+                    <button type="button" class="pa-btn pa-btn-outline" data-terms-copy>
+                        <i class="fas fa-link"></i> Copy link
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <script src="~/js/terms.js" asp-append-version="true"></script>
+}

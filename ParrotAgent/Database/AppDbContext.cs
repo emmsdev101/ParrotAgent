@@ -26,7 +26,8 @@ namespace ParrotAgent.Database
 
         public DbSet<DocumentVector> DocumentVectors { get; set; }
         public DbSet<DocumentChunk> DocumentChunks { get; set; }
-
+        public DbSet<Organization> Organizations { get; set; }
+        public DbSet<Role> Roles { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -65,7 +66,29 @@ namespace ParrotAgent.Database
 
             });
 
-        
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.HasOne(u => u.Organization)
+                .WithMany(o => o.Users)
+                .HasForeignKey(c => c.OrganizationId)
+                .OnDelete(DeleteBehavior.NoAction);
+            });
+
+            modelBuilder.Entity<Organization>(entity =>
+            {
+                entity.HasMany(o => o.Users)
+                .WithOne(u => u.Organization)
+                .HasForeignKey(c => c.OrganizationId)
+                .OnDelete(DeleteBehavior.NoAction);
+            });
+
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.HasOne(u => u.Role)
+                .WithMany()
+                .HasForeignKey(c => c.RoleId)
+                .OnDelete(DeleteBehavior.NoAction);
+            });
         }
     }
 }

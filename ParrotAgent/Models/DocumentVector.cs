@@ -11,6 +11,7 @@ namespace ParrotAgent.Models
         public User User { get; set; } = null!;
         public int UserId { get; set; }
         public int KnowledgeBaseId { get; set; }
+        public int OrganizationId { get; set; }
     }
 
     public class DocumentChunk

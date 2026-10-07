@@ -12,9 +12,9 @@
             <!-- Left: Marketing / value panel -->
             <aside class="auth-aside">
                 <div class="auth-aside-inner">
-                    <span class="auth-aside-badge">
+                    @* <span class="auth-aside-badge">
                         <i class="fas fa-sparkles"></i> Free forever · No credit card
-                    </span>
+                    </span> *@
                     <h2>Start building your knowledge base today.</h2>
                     <p>
                         Join thousands of teams who organize, share, and discover
@@ -58,67 +58,94 @@
             </aside>
 
             <!-- Right: Form -->
+            <form method="post" class="auth-form">
+                    @Html.AntiForgeryToken()
             <div class="auth-card">
                 <header class="auth-header">
                     <h1>Create your account</h1>
                     <p>Get started in under 30 seconds.</p>
                 </header>
 
-                <form method="post" class="auth-form">
-                    @Html.AntiForgeryToken()
+                
 
-                    <!-- Full name -->
+                    <!-- Firstname -->
                     <div class="auth-field">
-                        <label for="FullName">Full name</label>
+                        <label for="FirstName">First name</label>
                         <div class="auth-input-wrap">
                             <i class="fas fa-user"></i>
-                            <input type="text" asp-for="NewUser.Name"
+                            <input type="text" asp-for="UserFormData.FirstName"
                                    placeholder="Jane Cooper" autocomplete="name" required />
                         </div>
-                        <span asp-validation-for="NewUser.Name" class="text-danger"></span>
+                        <span asp-validation-for="UserFormData.FirstName" class="text-danger"></span>
+                    </div>
+
+                    <!-- Lastname -->
+                    <div class="auth-field">
+                        <label for="LastName">Last name</label>
+                        <div class="auth-input-wrap">
+                            <i class="fas fa-user"></i>
+                            <input type="text" asp-for="UserFormData.LastName"
+                                   placeholder="Jane Cooper" autocomplete="family-name" required />
+                        </div>
+                        <span asp-validation-for="UserFormData.LastName" class="text-danger"></span>
                     </div>
 
                     <!-- Email -->
                     <div class="auth-field">
-                        <label for="NewUser.Email">Work email</label>
+                        <label for="UserFormData.Email">Work email</label>
                         <div class="auth-input-wrap">
                             <i class="fas fa-envelope"></i>
-                            <input type="email" asp-for="NewUser.Email"
+                            <input type="email" asp-for="UserFormData.Email"
                                    placeholder="you@company.com" autocomplete="email" required />
                         </div>
-                        <span asp-validation-for="NewUser.Email" class="text-danger"></span>
+                        <span asp-validation-for="UserFormData.Email" class="text-danger"></span>
                     </div>
-
-                    <!-- Username -->
-                    <div class="auth-field">
-                        <label for="Username">Username</label>
-                        <div class="auth-input-wrap">
-                            <i class="fas fa-user"></i>
-                            <input type="text" asp-for="NewUser.Username"
-                                   placeholder="jane.cooper" autocomplete="username" required />
-                        </div>
-                        <span asp-validation-for="NewUser.Username" class="text-danger"></span>
-                    </div>
-
-                    <input type="hidden" asp-for="NewUser.Role" value="User" />
 
                     <!-- Password -->
                     <div class="auth-field">
-                        <label for="Password">Password</label>
+                        <label asp-for="UserFormData.Password">Password</label>
                         <div class="auth-input-wrap">
                             <i class="fas fa-lock"></i>
-                            <input type="password" asp-for="NewUser.Password"
+                            <input type="password" asp-for="UserFormData.Password"
                                    placeholder="At least 8 characters"
-                                   autocomplete="new-password" required minlength="8" />
+                                   autocomplete="new-password"
+                                   required
+                                   minlength="8"
+                                   maxlength="128"
+                                   pattern="(?=.*[A-Za-z])(?=.*[0-9]).{8,128}"
+                                   title="Use 8–128 characters with at least one letter and one number." />
                             <button type="button" class="auth-toggle-pass" data-pa-toggle-password aria-label="Show password">
                                 <i class="far fa-eye"></i>
                             </button>
                         </div>
-                        <div class="auth-hint">
-                            <span asp-validation-for="NewUser.Password" class="text-danger"></span>
+                        <div class="auth-hint" id="password-strength" data-level="empty" aria-live="polite">
                             <span class="auth-hint-bar"><i></i></span>
                             <span class="auth-hint-text">Use 8+ characters with a mix of letters & numbers.</span>
                         </div>
+                        <ul class="auth-password-rules" id="password-rules">
+                            <li data-rule="length"><i class="fas fa-circle" aria-hidden="true"></i> At least 8 characters</li>
+                            <li data-rule="letter"><i class="fas fa-circle" aria-hidden="true"></i> At least one letter</li>
+                            <li data-rule="number"><i class="fas fa-circle" aria-hidden="true"></i> At least one number</li>
+                        </ul>
+                        <span asp-validation-for="UserFormData.Password" class="text-danger"></span>
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <div class="auth-field">
+                        <label asp-for="UserFormData.ConfirmPassword">Confirm password</label>
+                        <div class="auth-input-wrap">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" asp-for="UserFormData.ConfirmPassword"
+                                   placeholder="Re-enter your password"
+                                   autocomplete="new-password" required />
+                            <button type="button" class="auth-toggle-pass" data-pa-toggle-password aria-label="Show password">
+                                <i class="far fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="auth-hint" id="confirm-password-hint" data-level="empty" aria-live="polite">
+                            <span class="auth-hint-text">Re-enter the same password.</span>
+                        </div>
+                        <span asp-validation-for="UserFormData.ConfirmPassword" class="text-danger"></span>
                     </div>
 
                     <!-- Terms -->
@@ -126,7 +153,7 @@
                         <input type="checkbox" name="AcceptTerms" required />
                         <span class="auth-check-box"><i class="fas fa-check"></i></span>
                         <span class="auth-check-text">
-                            I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+                            I agree to the <a href="/Terms">Terms of Service</a> and <a href="/Privacy">Privacy Policy</a>.
                         </span>
                     </label>
 
@@ -135,26 +162,13 @@
                         Create account <i class="fas fa-arrow-right"></i>
                     </button>
 
-                    <!-- Divider -->
-                    <div class="auth-divider"><span>or continue with</span></div>
-
-                    <!-- Social -->
-                    <div class="auth-social">
-                        <button type="button" class="auth-social-btn">
-                            <i class="fab fa-google"></i> Google
-                        </button>
-                        <button type="button" class="auth-social-btn">
-                            <i class="fab fa-github"></i> GitHub
-                        </button>
-                    </div>
-                </form>
 
                 <footer class="auth-footer">
                     Already have an account?
                     <a href="/login">Sign in</a>
                 </footer>
             </div>
-
+            </form>
         </div>
     </div>
 </section>
@@ -172,9 +186,93 @@
                 input.type = isPassword ? 'text' : 'password';
                 icon.classList.toggle('fa-eye', !isPassword);
                 icon.classList.toggle('fa-eye-slash', isPassword);
+                btn.setAttribute('aria-label', isPassword ? 'Hide password' : 'Show password');
             });
         });
 
+        // Live password rules, strength, and confirmation match
+        (function () {
+            var password = document.getElementById('UserFormData_Password');
+            var confirmPassword = document.getElementById('UserFormData_ConfirmPassword');
+            var strength = document.getElementById('password-strength');
+            var rules = document.getElementById('password-rules');
+            var confirmHint = document.getElementById('confirm-password-hint');
+            if (!password || !confirmPassword || !strength || !rules || !confirmHint) return;
 
+            var strengthText = strength.querySelector('.auth-hint-text');
+            var confirmText = confirmHint.querySelector('.auth-hint-text');
+            var requirementMessage = 'Use 8–128 characters with at least one letter and one number.';
+
+            function checksFor(value) {
+                return {
+                    length: value.length >= 8 && value.length <= 128,
+                    letter: /[A-Za-z]/.test(value),
+                    number: /[0-9]/.test(value),
+                    upper: /[A-Z]/.test(value),
+                    lower: /[a-z]/.test(value),
+                    symbol: /[^A-Za-z0-9]/.test(value)
+                };
+            }
+
+            function updateConfirm() {
+                var confirmValue = confirmPassword.value;
+                if (!confirmValue) {
+                    confirmPassword.setCustomValidity('');
+                    confirmHint.setAttribute('data-level', 'empty');
+                    confirmText.textContent = 'Re-enter the same password.';
+                    return;
+                }
+
+                if (confirmValue === password.value) {
+                    confirmPassword.setCustomValidity('');
+                    confirmHint.setAttribute('data-level', 'strong');
+                    confirmText.textContent = 'Passwords match.';
+                    return;
+                }
+
+                confirmPassword.setCustomValidity('Passwords do not match.');
+                confirmHint.setAttribute('data-level', 'weak');
+                confirmText.textContent = 'Passwords do not match.';
+            }
+
+            function updatePassword() {
+                var value = password.value;
+                var checks = checksFor(value);
+                var requiredMet = checks.length && checks.letter && checks.number;
+
+                rules.querySelectorAll('[data-rule]').forEach(function (item) {
+                    var rule = item.getAttribute('data-rule');
+                    var met = !!checks[rule];
+                    var started = value.length > 0;
+                    item.classList.toggle('is-met', started && met);
+                    item.classList.toggle('is-unmet', started && !met);
+                    var icon = item.querySelector('i');
+                    if (icon) icon.className = started && met ? 'fas fa-check' : 'fas fa-circle';
+                });
+
+                if (!value) {
+                    password.setCustomValidity('');
+                    strength.setAttribute('data-level', 'empty');
+                    strengthText.textContent = 'Use 8+ characters with a mix of letters & numbers.';
+                } else if (!requiredMet) {
+                    password.setCustomValidity(requirementMessage);
+                    strength.setAttribute('data-level', 'weak');
+                    strengthText.textContent = requirementMessage;
+                } else if (checks.upper && checks.lower && checks.symbol) {
+                    password.setCustomValidity('');
+                    strength.setAttribute('data-level', 'strong');
+                    strengthText.textContent = 'Strong password.';
+                } else {
+                    password.setCustomValidity('');
+                    strength.setAttribute('data-level', 'fair');
+                    strengthText.textContent = 'Meets requirements. Add mixed case and a symbol to make it stronger.';
+                }
+
+                updateConfirm();
+            }
+
+            password.addEventListener('input', updatePassword);
+            confirmPassword.addEventListener('input', updateConfirm);
+        })();
     </script>
 }

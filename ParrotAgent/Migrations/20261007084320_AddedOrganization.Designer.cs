@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ParrotAgent.Database;
@@ -12,9 +13,11 @@ using Pgvector;
 namespace ParrotAgent.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20261007084320_AddedOrganization")]
+    partial class AddedOrganization
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -243,7 +246,7 @@ namespace ParrotAgent.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("OrganizationId")
+                    b.Property<int>("OrganizationId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Password")
@@ -293,7 +296,8 @@ namespace ParrotAgent.Migrations
                     b.HasOne("ParrotAgent.Models.Organization", "Organization")
                         .WithMany("Users")
                         .HasForeignKey("OrganizationId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.HasOne("ParrotAgent.Models.Role", "Role")
                         .WithMany()
